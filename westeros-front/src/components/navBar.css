@@ -1,0 +1,115 @@
+/* Estilos principales del navbar */
+.navbar {
+    background-color: #2C3E50 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  /* Logo */
+  .logo {
+    font-family: 'medieval', serif !important;
+    cursor: pointer;
+    margin-right: 2rem !important;
+    flex-grow: 0;
+    transition: color 0.3s ease;
+  }
+  
+  .logo:hover {
+    color: #DAA520;
+  }
+  
+  /* Botón de menú */
+  .menu-button {
+    margin-right: 1rem !important;
+  }
+  
+  /* Contenedor de búsqueda */
+  .search-container {
+    flex-grow: 1;
+    max-width: 400px;
+  }
+  
+  .search-box {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-box:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+  
+  .search-icon {
+    margin-right: 0.5rem;
+  }
+  
+  .search-input {
+    color: inherit;
+    width: 100%;
+  }
+  
+  .search-input input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Espaciador */
+  .spacer {
+    flex-grow: 1;
+  }
+  
+  /* Sección de perfil */
+  .profile-section {
+    position: relative;
+  }
+  
+  .profile-button {
+    padding: 0.5rem;
+  }
+  
+  .avatar {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  /* Botón de inicio de sesión */
+  .login-button {
+    border: 1px solid white !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .login-button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: #DAA520 !important;
+    color: #DAA520 !important;
+  }
+  
+  /* Menú de perfil */
+  .profile-menu .MuiPaper-root {
+    background-color: #34495E;
+    color: white;
+    min-width: 200px;
+  }
+  
+  .profile-menu .MuiMenuItem-root {
+    transition: background-color 0.3s ease;
+  }
+  
+  .profile-menu .MuiMenuItem-root:hover {
+    background-color: #2C3E50;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .search-container {
+      display: none;
+    }
+    
+    .logo {
+      font-size: 1.2rem !important;
+      margin-right: 1rem !important;
+    }
+  }
