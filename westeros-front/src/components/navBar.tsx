@@ -9,12 +9,13 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-// import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import Logo from '../assets/mwlogo.png';  // Asegúrate de que la ruta sea correcta
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -46,7 +47,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -58,8 +58,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    React.useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Estado de autenticación
+  const navigate = useNavigate(); // Hook para la navegación
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -81,6 +82,14 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogin = () => {
+    navigate('/login'); // Navega al inicio de sesión
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false); // Simula el cierre de sesión
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -98,8 +107,28 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Cerrar Sesión</MenuItem>
+      {isLoggedIn ? (
+        <>
+          <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleLogout();
+              handleMenuClose();
+            }}
+          >
+            Cerrar Sesión
+          </MenuItem>
+        </>
+      ) : (
+        <MenuItem
+          onClick={() => {
+            handleLogin();
+            handleMenuClose();
+          }}
+        >
+          Iniciar Sesión
+        </MenuItem>
+      )}
     </Menu>
   );
 
@@ -157,24 +186,28 @@ export default function PrimarySearchAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-         </IconButton> */}
+          {/* Logo que redirige a la página principal */}
+          <Box
+            component="img"
+            src={Logo}
+            alt="Logo"
+            sx={{
+              height: 50, // Ajusta el tamaño
+              width: 'auto', // Mantiene la proporción
+              cursor: 'pointer', // Hacemos que el logo sea clickeable
+              marginRight: 2,
+            }}
+            onClick={() => navigate('/')} // Redirige a la página principal al hacer clic
+          />
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            Mercado de Westeros
+            {/*Mercado de Westeros*/}
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -232,3 +265,4 @@ export default function PrimarySearchAppBar() {
     </Box>
   );
 }
+
