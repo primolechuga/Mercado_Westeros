@@ -9,6 +9,7 @@ import {
   Link, // Para los enlaces
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom'; // Importa Link de react-router-dom
+import { useAuth } from '../contexts/authContext';
 
 interface FormData {
   email: string;
@@ -16,19 +17,35 @@ interface FormData {
 }
 
 const Login: React.FC = () => {
+
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
   });
+
+  const { login } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async ( e : FormEvent) => {
     e.preventDefault();
-    console.log('Form data:', formData); // Aquí puedes agregar lógica de autenticación
+    const response = await fetch('http://localhost:4000/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      const data = response.headers.get('authorization') || '';
+      login(data)
+    } else {
+      alert('Login failed');
+    };
   };
 
   return (

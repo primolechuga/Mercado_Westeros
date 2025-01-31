@@ -28,10 +28,23 @@ const Register: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Form data:', formData); // Aquí puedes agregar lógica de registro
-  };
+
+    const response = await fetch('http://localhost:4000/user/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      alert('Usuario creado exitosamente');
+    } else {
+      alert('Error al crear el usuario');
+    };
+  }
 
   return (
     <Container
@@ -116,4 +129,3 @@ const Register: React.FC = () => {
 };
 
 export default Register;
-
