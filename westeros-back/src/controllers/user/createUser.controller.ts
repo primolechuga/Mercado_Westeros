@@ -20,31 +20,31 @@ import { prisma } from '../../libs/prisma';
 
 export const createUser = async (req: Request<User>, res: Response) => {
 
-    const { name, email, password} = req.body;
+  const { name, email, password } = req.body;
 
-    const newUser = await prisma.user.create({
-        data: {
-            name,
-            email,
-            password: await bcrypt.hash(password, 12)
-        }
-    });
-
-    if (newUser) {
-        let token = jwt.sign(
-            { id: newUser.id,
-            name: newUser.name,
-            email: newUser.email
-             },
-            process.env.JWT_SECRET || 'Secret',
-            {
-                expiresIn: '24h',
-            }
-        );
-        token = 'Bearer ' + token;
-        res.header('authorization', token);
+  const newUser = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password: await bcrypt.hash(password, 12)
     }
+  });
+
+  if (newUser) {
+    let token = jwt.sign(
+      { id: newUser.id,
+        name: newUser.name,
+        email: newUser.email
+      },
+      process.env.JWT_SECRET || 'Secret',
+      {
+        expiresIn: '24h',
+      }
+    );
+    token = 'Bearer ' + token;
+    res.header('authorization', token);
+  }
     
-    res.status(201).send('Usuario creado correctamente');
+  res.status(201).send('Usuario creado correctamente');
 
 };

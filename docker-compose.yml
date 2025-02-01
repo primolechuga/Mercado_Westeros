@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: nodeApp
+    restart: unless-stopped
+    build: 
+      context: ./westeros-back
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - DATABASE_URL=postgresql://admin:admin@postgres:5432/WesterosDB
+    depends_on:
+      - postgres
+    volumes:
+      - ./westeros-back:/usr/src/app
+      - /usr/src/app/node_modules # Evita sobrescribir node_modules
+    networks:
+      - app-network
+    command: >
+      sh -c "npx prisma generate &&
+             npx prisma migrate dev --name init &&
+             npm run dev"
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: WesterosDB
+    networks:
+      - app-network
+    logging:
+      driver: "none"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  react-app:
+    container_name: reactApp
+    restart: unless-stopped
+    build: 
+      context: ./westeros-front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./westeros-front:/usr/src/app
+      - /usr/src/app/node_modules # Evita sobrescribir node_modules
+    networks:
+      - app-network
+    command: >
+      sh -c "npm install && npm run dev -- --host"
+    depends_on:
+      - app
+
+volumes:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge
