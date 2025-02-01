@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '@prisma/client';
 import { prisma } from '../../libs/prisma';
 
 /**
@@ -17,8 +16,7 @@ import { prisma } from '../../libs/prisma';
  * 
  * 
  */
-
-export const createUser = async (req: Request<User>, res: Response) => {
+export const createUser = async (req: Request, res: Response) => {
 
   const { name, email, password } = req.body;
 

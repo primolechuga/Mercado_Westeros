@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../libs/prisma';
@@ -17,7 +17,7 @@ import { AuthenticationError } from '../../errors/authorizationError';
  * 
  */
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, _next: NextFunction) => {
 
   const { email, password } = req.body;
 
@@ -28,20 +28,17 @@ export const loginUser = async (req: Request, res: Response) => {
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
-    throw new AuthenticationError('Usuario no encontrado');//'Usuario no encontrado' para mantener la seguridad
+    throw new AuthenticationError('Usuario no encontrado'); // 'Usuario no encontrado' para mantener la seguridad
   }
 
   let token = jwt.sign(
-    { id: user.id,
-      name: user.name,
-      email: user.email
-    },
+    { id: user.id, name: user.name, email: user.email },
     process.env.JWT_SECRET || 'Secret',
-    {
-      expiresIn: '24h',
-    }
+    { expiresIn: '24h' }
   );
+
   token = 'Bearer ' + token;
-  res.header('authorization', token);
+  res.setHeader('authorization', token);
   res.status(200).send('Usuario logueado correctamente');
+
 };
