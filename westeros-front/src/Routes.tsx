@@ -9,7 +9,7 @@ import UserRequestsPage from './pages/UserRequestsTable';
 import MerchantsPage from './pages/MerchantsPage';
 import AddProductPage from './pages/AddProductPage';
 
-const AppRoutes: React.FC = () => {
+export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -23,7 +23,7 @@ const AppRoutes: React.FC = () => {
   );
 };
 
-export default AppRoutes;
+
 
 
 

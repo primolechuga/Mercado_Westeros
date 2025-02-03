@@ -3,6 +3,7 @@ import PrimarySearchAppBar from '../components/navBar';
 import { Container, Box } from '@mui/material';
 import FloatingChat from '../components/floatchat';
 import AuctionList from '../components/itemList';
+// import NavBar from '../components/buttonNav';
 
 const HomePage: React.FC = () => {
   const mockItems = [

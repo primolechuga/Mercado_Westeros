@@ -39,6 +39,8 @@ export const loginUser = async (req: Request, res: Response, _next: NextFunction
 
   token = 'Bearer ' + token;
   res.setHeader('authorization', token);
-  res.status(200).send('Usuario logueado correctamente');
+  res.status(200).json({ message: 'Usuario logueado correctamente',
+    user: { id: user.id, name: user.name, email: user.email, role : user.role }
+  });
 
 };

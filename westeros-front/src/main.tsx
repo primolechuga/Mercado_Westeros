@@ -2,8 +2,10 @@ import { CssBaseline } from '@mui/material'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+import { App } from './App.tsx'
 import { AuthProvider } from './contexts/authContext.tsx'
+import { BrowserRouter as Router } from 'react-router-dom';
+
 // import { createTheme } from '@mui/material/styles';
 
 // const theme = createTheme({
@@ -17,10 +19,12 @@ import { AuthProvider } from './contexts/authContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CssBaseline />
-    <AuthProvider>
-    <App />
-    </AuthProvider>
+      <Router>
+      <CssBaseline />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+    </Router>
   </StrictMode>,
 )
 

@@ -14,9 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  isVerified Boolean  @default(false)
+  id         String  @id @default(uuid())
+  email      String  @unique
+  name       String
+  password   String
+  isVerified Boolean @default(false)
+  role       Role    @default(MERCADER)
+}
+
+enum Role {
+  MERCADER
+  MAESTRE
 }

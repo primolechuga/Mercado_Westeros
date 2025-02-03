@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -10,20 +10,30 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom'; // Importa Link de react-router-dom
 import { useAuth } from '../contexts/authContext';
+import { useNavigate } from 'react-router-dom';
 
-interface FormData {
+
+export interface AuthFormData {
   email: string;
   password: string;
 }
 
-const Login: React.FC = () => {
+export const Login: React.FC = () => {
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<AuthFormData>({
     email: '',
     password: '',
   });
 
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,20 +42,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async ( e : FormEvent) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:4000/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (response.ok) {
-      const data = response.headers.get('authorization') || '';
-      login(data)
-    } else {
-      alert('Login failed');
-    };
+    login(formData);
   };
 
   return (
@@ -125,13 +122,4 @@ const Login: React.FC = () => {
     </Container>
   );
 };
-
-export default Login;
-
-
-
-
-
-
-
 

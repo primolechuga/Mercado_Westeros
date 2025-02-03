@@ -16,6 +16,11 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Logo from '../assets/mwlogo.png';  // Asegúrate de que la ruta sea correcta
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import { Link } from "react-router-dom";
+import {AuthButton} from './appBar/authButton';
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -181,6 +186,9 @@ export default function PrimarySearchAppBar() {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
+      <MenuItem>
+        <AuthButton/>
+      </MenuItem>
     </Menu>
   );
 
@@ -220,6 +228,16 @@ export default function PrimarySearchAppBar() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Stack direction="row" spacing={2}>
+            <Button sx = {
+              { color: 'white'}
+            }>Primary</Button>
+            <Button disabled>Disabled</Button>
+            <Button component={Link} to="/products" sx={{ color: 'white' }}>
+              Link
+            </Button>
+            <AuthButton/>
+          </Stack>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
