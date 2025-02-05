@@ -8,6 +8,7 @@ import ProductTablePage from './pages/ProductTablePage'; // Página de tabla de 
 import UserRequestsPage from './pages/UserRequestsTable';
 import MerchantsPage from './pages/MerchantsPage';
 import AddProductPage from './pages/AddProductPage';
+import HousePage from './pages/HousePage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/userRequests" element={<UserRequestsPage />} /> {/* Ruta de tabla de solicitudes de usuario */}
       <Route path="/merchants" element={<MerchantsPage />} /> {/* Ruta de tabla de solicitudes de usuario */}
       <Route path="/addProduct" element={<AddProductPage />} /> {/* Ruta de tabla de solicitudes de usuario */}
+      <Route path="/housePage" element={<HousePage />} /> {/* Ruta de tabla de solicitudes de usuario */}
     </Routes>
   );
 };
