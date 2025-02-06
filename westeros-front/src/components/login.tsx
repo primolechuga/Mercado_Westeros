@@ -52,8 +52,8 @@ export const Login: React.FC = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh', // Asegura que el contenedor ocupe toda la altura de la pantalla
-        backgroundColor: '#fafafa', // Un fondo claro para todo el área
+        height: '60vh', // Asegura que el contenedor ocupe toda la altura de la pantalla
+        // backgroundColor: '#fafafa', // Un fondo claro para todo el área
       }}
     >
       <Paper
@@ -106,9 +106,9 @@ export const Login: React.FC = () => {
 
         {/* Enlaces debajo del formulario */}
         <Box sx={{ mt: 2 }}>
-          <Link href="#" variant="body2" sx={{ display: 'block', textAlign: 'center', mb: 1 }}>
+          {/* <Link href="#" variant="body2" sx={{ display: 'block', textAlign: 'center', mb: 1 }}>
             ¿Olvidaste tu contraseña?
-          </Link>
+          </Link> */}
           <Link
             component={RouterLink} // Usar el componente RouterLink de react-router-dom
             to="/register" // Ruta de la página de registro

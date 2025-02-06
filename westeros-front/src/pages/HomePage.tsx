@@ -1,8 +1,9 @@
 import React from 'react';
-import PrimarySearchAppBar from '../components/navBar';
+// import PrimarySearchAppBar from '../components/navBar';
 import { Container, Box } from '@mui/material';
 import FloatingChat from '../components/floatchat';
 import AuctionList from '../components/itemList';
+// import LinkTab from '../components/appBar/tabBar';
 // import NavBar from '../components/buttonNav';
 
 const HomePage: React.FC = () => {
@@ -26,18 +27,17 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <>
-      {/* Barra de navegación */}
-      <PrimarySearchAppBar />
+<>
+  {/* Barra de navegación */}
 
-      {/* Contenedor principal con padding ajustado */}
-      <Box sx={{ paddingTop: '64px' }}> {/* 64px es la altura por defecto del AppBar */}
-        <Container sx={{ mt: 4 }}>
-          <AuctionList items={mockItems} />
-        </Container>
-        <FloatingChat />
-      </Box>
-    </>
+  {/* Contenedor principal con padding ajustado */}
+  <Box sx={{ paddingTop: '128px' }}>  
+  <FloatingChat />
+    <Container sx={{ mt: 4 }}>
+      <AuctionList items={mockItems} />
+    </Container>
+  </Box>
+  </>
   );
 };
 

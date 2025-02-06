@@ -34,12 +34,16 @@ const FloatingChat = () => {
           position: 'fixed',
           bottom: 16,
           right: 16,
+          width: 64, // Ajusta el tamaño del botón
+          height: 64,
           backgroundColor: 'primary.main',
           color: '#fff',
           '&:hover': { backgroundColor: 'primary.dark' },
         }}
       >
-        <ChatIcon />
+        <ChatIcon 
+          sx={{ fontSize: 32 }}
+        />
       </IconButton>
 
       {/* Ventana de chat */}

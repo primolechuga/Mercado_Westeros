@@ -1,6 +1,5 @@
 import React from 'react';
 import DataTable from '../components/dataTable';
-import LogoAppBar from '../components/logoAppBar';
 
 const productData = [
   { id: 1, name: 'Producto A', price: 100, stock: 20 },
@@ -22,10 +21,9 @@ const productColumns = [
 
 const ProductTablePage: React.FC = () => {
   return (
-    <div style={{marginTop: '100px'}}>
-        <h1>Tabla de productos</h1>
-        <LogoAppBar></LogoAppBar>
-        <DataTable data={productData} columns={productColumns} />;
+    <div style={{ marginTop: '20px', padding: '20px' }}>
+      <h1>Tabla de productos</h1>
+      <DataTable data={productData} columns={productColumns} />
     </div>
 )};
 
