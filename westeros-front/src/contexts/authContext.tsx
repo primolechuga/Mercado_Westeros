@@ -5,6 +5,8 @@ import { AuthFormData } from '../components/login';
 interface User {
   email: string;
   name: string;
+  id: string;
+  role: string; // Asegurar que el usuario tiene un rol
 }
 
 interface AuthContextType {
@@ -29,14 +31,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      // Optional: Add token validation logic here
+    const storedUser = localStorage.getItem('user');
+
+    if (token && storedUser) {
+      const parsedUser: User = JSON.parse(storedUser);
       setIsAuthenticated(true);
+      setUser(parsedUser);
+      setRole(parsedUser.role);
     }
   }, []);
 
   const login = async (userData: AuthFormData) => {
-
     if (!userData.email || !userData.password) {
       throw new Error("Email y contraseña son requeridos");
     }
@@ -53,11 +58,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (response.ok) {
         const token = response.headers.get('authorization') || '';
         localStorage.setItem('token', token);
-        
+
         const responseBody = await response.json();
+        const user = responseBody?.user;
+
+        localStorage.setItem('user', JSON.stringify(user)); // Guardar usuario en localStorage
         setIsAuthenticated(true);
-        setUser(responseBody?.user || null);
-        setRole(responseBody?.role || null);
+        setUser(user);
+        setRole(user.role);
 
         navigate('/');
       } else {
@@ -72,6 +80,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setIsAuthenticated(false);
     setUser(null);
     setRole(null);

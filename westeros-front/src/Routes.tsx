@@ -8,17 +8,33 @@ import ProductTablePage from './pages/ProductTablePage'; // Página de tabla de 
 import UserRequestsPage from './pages/UserRequestsTable';
 import MerchantsPage from './pages/MerchantsPage';
 import AddProductPage from './pages/AddProductPage';
+import { ProtectedRoute } from './components/auth/protectedRoute';
+import { Unauthorized } from './pages/Unauthorized';
 
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      {/* Rutas públicas */}
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginPage />} /> {/* Aquí usamos LoginPage */}
-      <Route path="/register" element={<RegisterPage />} /> {/* Ruta de registro */}
-      <Route path="/products" element={<ProductTablePage />} /> {/* Ruta de tabla de productos */}
-      <Route path="/userRequests" element={<UserRequestsPage />} /> {/* Ruta de tabla de solicitudes de usuario */}
-      <Route path="/merchants" element={<MerchantsPage />} /> {/* Ruta de tabla de solicitudes de usuario */}
-      <Route path="/addProduct" element={<AddProductPage />} /> {/* Ruta de tabla de solicitudes de usuario */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
+
+
+      {/* Rutas protegidas */}
+      <Route element={<ProtectedRoute allowedRoles={['mercader', 'maestre']} />}>
+        <Route path="/products" element={<ProductTablePage />} />
+      </Route>
+
+      {/* Rutas protegidas solo para Maestre*/}
+
+      <Route element={<ProtectedRoute allowedRoles={['maestre']} />}>
+        <Route path="/userRequests" element={<UserRequestsPage />} />
+        <Route path="/merchants" element={<MerchantsPage />} />
+        <Route path="/addProduct" element={<AddProductPage />} />
+      </Route>
+
+      {/* Ruta protegida solo para Mercader */}
     </Routes>
   );
 };
