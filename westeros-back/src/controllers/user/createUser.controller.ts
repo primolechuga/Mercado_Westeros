@@ -42,7 +42,9 @@ export const createUser = async (req: Request, res: Response) => {
     token = 'Bearer ' + token;
     res.header('authorization', token);
   }
-    
-  res.status(201).send('Usuario creado correctamente');
+
+  res.status(201).json({ message: 'Usuario creado correctamente',
+    user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role.toLowerCase() },
+  });
 
 };
