@@ -1,5 +1,4 @@
-// src/components/Register.tsx
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import {
   Box,
   Button,
@@ -8,12 +7,20 @@ import {
   Container,
   Paper,
   Link,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material';
 
 interface FormData {
   email: string;
   name: string;
   password: string;
+  kingdom: string;
+  address1: string;
+  address2?: string;
 }
 
 const Register: React.FC = () => {
@@ -21,11 +28,22 @@ const Register: React.FC = () => {
     email: '',
     name: '',
     password: '',
+    kingdom: '',
+    address1: '',
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+  
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -43,8 +61,8 @@ const Register: React.FC = () => {
       alert('Usuario creado exitosamente');
     } else {
       alert('Error al crear el usuario');
-    };
-  }
+    }
+  };
 
   return (
     <Container
@@ -82,7 +100,7 @@ const Register: React.FC = () => {
             margin="normal"
             variant="outlined"
             value={formData.email}
-            onChange={handleChange}
+            onChange={handleTextChange}
           />
           <TextField
             label="Nombre Completo"
@@ -92,7 +110,7 @@ const Register: React.FC = () => {
             margin="normal"
             variant="outlined"
             value={formData.name}
-            onChange={handleChange}
+            onChange={handleTextChange}
           />
           <TextField
             label="Contraseña"
@@ -102,7 +120,44 @@ const Register: React.FC = () => {
             margin="normal"
             variant="outlined"
             value={formData.password}
-            onChange={handleChange}
+            onChange={handleTextChange}
+          />
+
+          {/* Campo de selección para "Reino" */}
+          <FormControl fullWidth margin="normal" variant="outlined">
+            <InputLabel id="kingdom-label">Reino</InputLabel>
+            <Select
+              labelId="kingdom-label"
+              name="kingdom"
+              value={formData.kingdom}
+              onChange={handleSelectChange}
+              label="Reino"
+            >
+              <MenuItem value="Norte">Norte</MenuItem>
+              <MenuItem value="Sur">Sur</MenuItem>
+              <MenuItem value="Este">Este</MenuItem>
+              <MenuItem value="Oeste">Oeste</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label="Dirección 1"
+            name="address1"
+            type="text"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={formData.address1}
+            onChange={handleTextChange}
+          />
+          <TextField
+            label="Dirección 2"
+            name="address2"
+            type="text"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={formData.address2}
+            onChange={handleTextChange}
           />
           <Button
             type="submit"
@@ -129,3 +184,4 @@ const Register: React.FC = () => {
 };
 
 export default Register;
+

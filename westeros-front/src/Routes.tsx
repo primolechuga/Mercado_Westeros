@@ -10,6 +10,8 @@ import MerchantsPage from './pages/MerchantsPage';
 import AddProductPage from './pages/AddProductPage';
 import { ProtectedRoute } from './components/auth/protectedRoute';
 import { Unauthorized } from './pages/Unauthorized';
+import HousePage from './pages/HousePage';
+
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -32,6 +34,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/userRequests" element={<UserRequestsPage />} />
         <Route path="/merchants" element={<MerchantsPage />} />
         <Route path="/addProduct" element={<AddProductPage />} />
+        <Route path="/house" element={<HousePage />} />
       </Route>
 
       {/* Ruta protegida solo para Mercader */}
