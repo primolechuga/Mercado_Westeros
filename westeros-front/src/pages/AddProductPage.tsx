@@ -1,23 +1,13 @@
-import React, { useState } from 'react';
-import LogoAppBar from '../components/logoAppBar';
-import AddProductForm from '../components/addProductForm';
+import React from "react";
+import { Container } from "@mui/material";
+import CreateProductForm from "../components/addProductForm";
 
-const AddProductPage: React.FC = () => {
-  const [products, setProducts] = useState<
-    { id: number; name: string; price: number; stock: number }[]
-  >([]);
-
-  const handleAddProduct = (product: { id: number; name: string; price: number; stock: number }) => {
-    setProducts((prevProducts) => [...prevProducts, product]);
-    console.log('Producto agregado:', product);
-  };
-
+const CreateProductPage: React.FC = () => {
   return (
-    <div style={{ marginTop: '100px' }}>
-      <LogoAppBar />
-      <AddProductForm onAddProduct={handleAddProduct} />
-    </div>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <CreateProductForm />
+    </Container>
   );
 };
 
-export default AddProductPage;
+export default CreateProductPage;
