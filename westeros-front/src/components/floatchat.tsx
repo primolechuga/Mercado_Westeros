@@ -60,6 +60,7 @@ const FloatingChat = () => {
             flexDirection: 'column',
             boxShadow: 4,
             borderRadius: 2,
+            zIndex: 1
           }}
         >
           {/* Título */}

@@ -11,7 +11,9 @@ import AddProductPage from './pages/AddProductPage';
 import { ProtectedRoute } from './components/auth/protectedRoute';
 import { Unauthorized } from './pages/Unauthorized';
 import HousePage from './pages/HousePage';
-
+import { MyAuctionsPage } from './pages/MyAuctionsPage';
+import CreateAuctionPage from './pages/createAuctionPage';
+import ProductListPage from './pages/ProductListPage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -26,6 +28,7 @@ export const AppRoutes: React.FC = () => {
       {/* Rutas protegidas */}
       <Route element={<ProtectedRoute allowedRoles={['mercader', 'maestre']} />}>
         <Route path="/products" element={<ProductTablePage />} />
+        <Route path="/house" element={<HousePage />} />
       </Route>
 
       {/* Rutas protegidas solo para Maestre*/}
@@ -38,8 +41,15 @@ export const AppRoutes: React.FC = () => {
       </Route>
 
       {/* Ruta protegida solo para Mercader */}
+    <Route element={<ProtectedRoute allowedRoles={['mercader']} />}>
+      <Route path="/myAuctions" element={<MyAuctionsPage />} />
+      <Route path="/createAuction/:id" element={<CreateAuctionPage />} />
+      <Route path="/productList" element={<ProductListPage />} />
+    </Route>
+
     </Routes>
   );
+
 };
 
 

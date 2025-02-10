@@ -1,99 +1,101 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+
 import { useAuth } from '../../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Box, Tabs, Tab, Menu, MenuItem } from '@mui/material';
 
 
-function samePageLinkNavigation(
-  event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-) {
-  if (
-    event.defaultPrevented ||
-    event.button !== 0 || // ignore everything but left-click
-    event.metaKey ||
-    event.ctrlKey ||
-    event.altKey ||
-    event.shiftKey
-  ) {
-    return false;
-  }
-  return true;
-}
 
 interface LinkTabProps {
   label?: string;
-  href?: string;
-  selected?: boolean;
-  onClick?: () => void | Promise<void>;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-
-
-const roleBasedTabs : Record<string, { label: string; page: string; }[]> = {
-    maestre: [
-        { label: 'Mercaderes', page : '/merchants' },
-        { label: 'Productos', page : '/products' },
-        { label: 'Subastas', page : '/' },
-        { label: 'Solicitudes', page : '/userRequests' },
-
-    ],
-    mercader: [
-        { label: 'Mis subastas', page : '/' },
-        { label: 'Subastas', page : '/' },
-        { label: 'Productos', page : '/products' },
-        // { label: 'Page Four', onClick: () => console.log('Page Four') },
-    ],
-    };
-
+const roleBasedTabs: Record<string, { label: string; page?: string; subMenu?: { label: string; page: string; }[] }[]> = {
+  maestre: [
+    { label: 'Mercaderes', page: '/merchants' },
+    { label: 'Productos', page: '/products' },
+    { label: 'Subastas', page: '/' },
+    { label: 'Solicitudes', page: '/userRequests' },
+  ],
+  mercader: [
+    { label: 'Subastas', page :'/'},
+    { label: 'Mis subastas',       
+    subMenu: [
+      { label: 'Subastas creadas', page: '/myAuctions' },
+      { label: 'Subastas compradas', page: '/my-auctions/bought' },
+    ]},
+    { label: 'Productos', page: '/products' },
+    { label: 'Casa', page: '/house' },
+  ],
+};
 
 function LinkTab(props: LinkTabProps) {
   return (
     <Tab
       component="a"
-      onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        // Routing libraries handle this, you can remove the onClick handle when using them.
-        if (samePageLinkNavigation(event)) {
-          event.preventDefault();
-        }
-      }}
-      aria-current={props.selected && 'page'}
+      onClick={props.onClick}
       {...props}
     />
   );
 }
 
 export default function NavTabs() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const { role } = useAuth();
   const navigate = useNavigate();
+  
+  // Estado para manejar el menú de "Subastas"
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    // event.type can be equal to focus with selectionFollowsFocus.
-    if (
-      event.type !== 'click' ||
-      (event.type === 'click' &&
-        samePageLinkNavigation(
-          event as React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-        ))
-    ) {
-      setValue(newValue);
+  const handleTabClick = (event: React.MouseEvent<HTMLAnchorElement>, tab: { page?: string; subMenu?: { label: string; page: string; }[] }) => {
+    if (tab.subMenu) {
+      setAnchorEl(event.currentTarget); // Abre el menú
+    } else if (tab.page) {
+      navigate(tab.page);
     }
+  };
+
+  const handleMenuClose = (page: string) => {
+    navigate(page);
+    setAnchorEl(null);
   };
 
   return (
     <Box sx={{ width: '100%' }}>
       <Tabs
         value={value}
-        onChange={handleChange}
+        onChange={(_, newValue) => setValue(newValue)}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+        textColor="secondary"
+        indicatorColor="secondary"
         aria-label="nav tabs example"
-        role="navigation"
-       >
+      >
         {role && roleBasedTabs[role]?.map((tab, index) => (
-          <LinkTab key={index} label={tab.label} onClick={() => navigate(tab.page) }/>
+          <LinkTab 
+            key={index} 
+            label={tab.label} 
+            onClick={(event) => handleTabClick(event, tab)}
+          />
         ))}
       </Tabs>
+
+      {/* Menú desplegable para "Subastas" */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+      >
+        {role && roleBasedTabs[role]
+          .find(tab => tab.label === 'Mis subastas')?.subMenu?.map((subItem, index) => (
+            <MenuItem key={index} onClick={() => handleMenuClose(subItem.page)}>
+              {subItem.label}
+            </MenuItem>
+          ))
+        }
+      </Menu>
     </Box>
   );
 }
