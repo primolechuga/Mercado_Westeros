@@ -14,6 +14,8 @@ import HousePage from './pages/HousePage';
 import { MyAuctionsPage } from './pages/MyAuctionsPage';
 import CreateAuctionPage from './pages/createAuctionPage';
 import ProductListPage from './pages/ProductListPage';
+import { MyBidsPage } from './pages/MyBidsPage';
+import { WonAuctionsPage } from './pages/WonAuctionsPage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -45,6 +47,8 @@ export const AppRoutes: React.FC = () => {
       <Route path="/myAuctions" element={<MyAuctionsPage />} />
       <Route path="/createAuction/:id" element={<CreateAuctionPage />} />
       <Route path="/productList" element={<ProductListPage />} />
+      <Route path="/myBids" element={<MyBidsPage />} />
+      <Route path="/myWonAuctions" element={<WonAuctionsPage />} />
     </Route>
 
     </Routes>

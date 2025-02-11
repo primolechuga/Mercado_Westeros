@@ -11,7 +11,7 @@ import { AuctionList } from '../components/itemList';
 // import NavBar from '../components/buttonNav';
 import { useNavigate } from 'react-router-dom';
 
-export const MyAuctionsPage: React.FC = () => {
+export const WonAuctionsPage: React.FC = () => {
   const navigate = useNavigate();
   const mockItems = [
     {
@@ -70,38 +70,8 @@ export const MyAuctionsPage: React.FC = () => {
   return (
     <Box sx={{ paddingTop: '10px' }}>
       <Container sx={{ mt: 2 }}>
-        {/* Contenedor para el botón con alineación y estilos mejorados */}
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'flex-end', 
-            gap: 2, 
-            marginBottom: 2, 
-            maxWidth: '950px',
-          }}
-        >
-          <Button 
-            variant="contained" 
-            color="secondary" 
-            onClick={() => navigate('/productList')} // Navegación al crear subasta
-            startIcon={<GavelIcon />} // Icono de martillo de subasta
-            sx={{ 
-              fontWeight: 'bold', 
-              textTransform: 'none', 
-              borderRadius: '8px', 
-              paddingX: '16px', 
-              paddingY: '10px',
-              boxShadow: 2,
-              '&:hover': { backgroundColor: '#5a189a' } // Color personalizado en hover
-            }}
-          >
-            Crear Subasta Nueva
-          </Button>
-        </Box>
-
-        <AuctionList items={mockItems} showInactiveFilter={true} />
+        <AuctionList items={mockItems} />
       </Container>
-
       <FloatingChat />
     </Box>
   );

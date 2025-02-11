@@ -23,7 +23,8 @@ const roleBasedTabs: Record<string, { label: string; page?: string; subMenu?: { 
     { label: 'Mis subastas',       
     subMenu: [
       { label: 'Subastas creadas', page: '/myAuctions' },
-      { label: 'Subastas compradas', page: '/my-auctions/bought' },
+      { label: 'Subastas compradas', page: '/myWonAuctions' },
+      { label: 'Subastas Activas ', page: '/myBids' },
     ]},
     { label: 'Productos', page: '/products' },
     { label: 'Casa', page: '/house' },
