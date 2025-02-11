@@ -18,7 +18,7 @@ interface FormData {
   email: string;
   name: string;
   password: string;
-  kingdom: string;
+  house: string;
   address1: string;
   address2?: string;
 }
@@ -28,7 +28,7 @@ const Register: React.FC = () => {
     email: '',
     name: '',
     password: '',
-    kingdom: '',
+    house: '',
     address1: '',
   });
 
@@ -71,13 +71,13 @@ const Register: React.FC = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
+        height: '75vh',
         backgroundColor: '#fafafa',
       }}
     >
       <Paper
         sx={{
-          padding: 4,
+          padding: 1,
           width: '100%',
           maxWidth: 400,
           display: 'flex',
@@ -125,18 +125,23 @@ const Register: React.FC = () => {
 
           {/* Campo de selección para "Reino" */}
           <FormControl fullWidth margin="normal" variant="outlined">
-            <InputLabel id="kingdom-label">Reino</InputLabel>
+            <InputLabel id="house-label">Casa</InputLabel>
             <Select
-              labelId="kingdom-label"
-              name="kingdom"
-              value={formData.kingdom}
+              labelId="house-label"
+              name="house"
+              value={formData.house}
               onChange={handleSelectChange}
-              label="Reino"
+              label="Casa"
             >
-              <MenuItem value="Norte">Norte</MenuItem>
-              <MenuItem value="Sur">Sur</MenuItem>
-              <MenuItem value="Este">Este</MenuItem>
-              <MenuItem value="Oeste">Oeste</MenuItem>
+              <MenuItem value="Norte">Stark</MenuItem>
+              <MenuItem value="Sur">Lannister</MenuItem>
+              <MenuItem value="Este">Targaryen</MenuItem>
+              <MenuItem value="Oeste">Greyjoy</MenuItem>
+              <MenuItem value="Norte">Tyrell</MenuItem>
+              <MenuItem value="Sur">Martell</MenuItem>
+              <MenuItem value="Este">Tully</MenuItem>
+              <MenuItem value="Este">Arryn</MenuItem>
+              
             </Select>
           </FormControl>
           <TextField
