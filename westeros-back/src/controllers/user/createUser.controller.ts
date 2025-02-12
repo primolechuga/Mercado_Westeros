@@ -24,6 +24,7 @@ export const createUser = async (req: Request, res: Response) => {
     data: {
       name,
       email,
+      
       password: await bcrypt.hash(password, 12)
     }
   });

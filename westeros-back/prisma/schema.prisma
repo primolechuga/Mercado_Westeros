@@ -18,7 +18,7 @@ model user {
   email      String  @unique
   name       String
   password   String
-  houseId    Int
+  houseId    Int     @default(1)
   isVerified Boolean @default(false)
   role       Role    @default(MERCADER)
   House      house   @relation(fields: [houseId], references: [id])
@@ -52,7 +52,7 @@ model productStore {
   id      Int   @id @default(autoincrement())
   price   Float
   stock   Int
-  House   house @relation(fields: [houseId], references: [id])
+  house   house @relation(fields: [houseId], references: [id])
 }
 
 model auction {
@@ -66,7 +66,7 @@ model auction {
   endDate     DateTime
   isActive    Boolean
   product     product  @relation(fields: [productId], references: [id])
-  House       house    @relation(fields: [houseId], references: [id])
+  house       house    @relation(fields: [houseId], references: [id])
   bidHistory  bidHistory[]
 }
 
