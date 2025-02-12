@@ -39,12 +39,16 @@ const Register: React.FC = () => {
     });
   };
   
-  const handleSelectChange = (e: SelectChangeEvent) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    const { value } = e.target;
+    console.log("Selected house:", value); // Verifica el valor seleccionado
+    setFormData((prev) => ({
+      ...prev,
+      house: value,
+    }));
   };
+  
+  
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -133,14 +137,14 @@ const Register: React.FC = () => {
               onChange={handleSelectChange}
               label="Casa"
             >
-              <MenuItem value="Norte">Stark</MenuItem>
-              <MenuItem value="Sur">Lannister</MenuItem>
-              <MenuItem value="Este">Targaryen</MenuItem>
-              <MenuItem value="Oeste">Greyjoy</MenuItem>
-              <MenuItem value="Norte">Tyrell</MenuItem>
-              <MenuItem value="Sur">Martell</MenuItem>
-              <MenuItem value="Este">Tully</MenuItem>
-              <MenuItem value="Este">Arryn</MenuItem>
+              <MenuItem value="Stark">Stark</MenuItem>
+              <MenuItem value="Lannister">Lannister</MenuItem>
+              <MenuItem value="Targaryen">Targaryen</MenuItem>
+              <MenuItem value="Greyjoy">Greyjoy</MenuItem>
+              <MenuItem value="Tyrell">Tyrell</MenuItem>
+              <MenuItem value="Martell">Martell</MenuItem>
+              <MenuItem value="Tully">Tully</MenuItem>
+              <MenuItem value="Arryn">Arryn</MenuItem>
               
             </Select>
           </FormControl>
