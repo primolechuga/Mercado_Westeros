@@ -14,14 +14,14 @@ datasource db {
 }
 
 model user {
-  id         String  @id @default(uuid())
-  email      String  @unique
+  id         String       @id @default(uuid())
+  email      String       @unique
   name       String
   password   String
-  houseId    Int     @default(1)
-  isVerified Boolean @default(false)
-  role       Role    @default(MERCADER)
-  House      house   @relation(fields: [houseId], references: [id])
+  houseId    Int          @default(1)
+  isVerified Boolean      @default(false)
+  role       Role         @default(MERCADER)
+  House      house        @relation(fields: [houseId], references: [id])
   bidHistory bidHistory[]
 }
 
@@ -34,7 +34,9 @@ model house {
   name         String
   id           Int            @id @default(autoincrement())
   imagePath    String
+  description  String
   balance      Float
+  cap          Float
   user         user[]
   productStore productStore[]
   auction      auction[]
@@ -43,6 +45,7 @@ model house {
 model product {
   name        String
   description String
+  imagePath   String
   id          Int       @id @default(autoincrement())
   auction     auction[]
 }
@@ -56,7 +59,7 @@ model productStore {
 }
 
 model auction {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   houseId     Int
   productId   Int
   basePrice   Float
@@ -65,18 +68,18 @@ model auction {
   probability Float
   endDate     DateTime
   isActive    Boolean
-  product     product  @relation(fields: [productId], references: [id])
-  house       house    @relation(fields: [houseId], references: [id])
+  product     product      @relation(fields: [productId], references: [id])
+  house       house        @relation(fields: [houseId], references: [id])
   bidHistory  bidHistory[]
 }
 
 model bidHistory {
-  id       Int      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   auctionId Int
-  userId   String
-  amount   Float
-  date     DateTime
-  isWinner Boolean
-  auction auction @relation(fields: [auctionId], references: [id])
-  user    user    @relation(fields: [userId], references: [id])
+  userId    String
+  amount    Float
+  date      DateTime
+  isWinner  Boolean
+  auction   auction  @relation(fields: [auctionId], references: [id])
+  user      user     @relation(fields: [userId], references: [id])
 }

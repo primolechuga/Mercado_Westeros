@@ -15,7 +15,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, _next: Nex
   }
 
   if (err instanceof Prisma.PrismaClientInitializationError) {
-    res.status(400).send({ message: 'Bad Request' });
+    res.status(500).send({ message: 'Ocurrió un error en el servidor. Por favor, inténtalo de nuevo más tarde.' });
     return;
   }
 

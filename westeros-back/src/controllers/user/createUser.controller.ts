@@ -1,7 +1,7 @@
-import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../../libs/prisma';
+import { hashPassword } from '../../utils/hashPassword';
 
 /**
  * Crea un usuario.
@@ -18,14 +18,14 @@ import { prisma } from '../../libs/prisma';
  */
 export const createUser = async (req: Request, res: Response) => {
 
-  const { name, email, password } = req.body;
+  const { name, email, password, houseId } = req.body;
 
   const newUser = await prisma.user.create({
     data: {
       name,
       email,
-      
-      password: await bcrypt.hash(password, 12)
+      houseId,
+      password: await hashPassword(password),
     }
   });
 
