@@ -1,12 +1,13 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import { Request } from 'express';
 
-export const storage = multer.diskStorage({
-  destination: (req: Request, file, cb) => {
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
     // Obtener el tipo de upload del request
     const uploadType = req.params.type; // 'products', 'profiles', etc.
+    console.log(uploadType);
     const uploadPath = `uploads/${uploadType}`;
     
     // Verificar que la carpeta existe
@@ -17,9 +18,7 @@ export const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    const id = req.params.id || Date.now(); // Usar ID si existe, sino timestamp
-    const ext = path.extname(file.originalname);
-    cb(null, `${id}${ext}`);
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 
