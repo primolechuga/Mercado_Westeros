@@ -23,20 +23,20 @@ export interface RequestWithUser extends Request {
   user: User;
 }
 
-export const saveUser = async (req: RequestWithUser ,_res: Response ,next: NextFunction) => {
+export const saveUser = async (req: RequestWithUser, _res: Response, next: NextFunction) => {
   
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      throw new AuthenticationError('Token no encontrado');
-    }
-    const verified = jwt.verify(token, secret) as JwtPayload;
-    const userFound = await prisma.user.findUnique({ where: { id: verified.id } });
-    if (!userFound) {
-      throw new AuthenticationError('Usuario no encontrado');
-    }
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    throw new AuthenticationError('Token no encontrado');
+  }
+  const verified = jwt.verify(token, secret) as JwtPayload;
+  const userFound = await prisma.user.findUnique({ where: { id: verified.id } });
+  if (!userFound) {
+    throw new AuthenticationError('Usuario no encontrado');
+  }
 
-    req.user = { id: userFound.id, name: userFound.name, email: userFound.email };
-    next();
+  req.user = userFound;
+  next();
 
-  };
+};
 
