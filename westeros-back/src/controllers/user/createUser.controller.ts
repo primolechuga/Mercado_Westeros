@@ -25,6 +25,7 @@ export const createUser = async (req: Request, res: Response) => {
       name,
       email,
       houseId,
+      role: 'MERCADER',
       password: await hashPassword(password),
     }
   });
