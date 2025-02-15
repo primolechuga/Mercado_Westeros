@@ -1,6 +1,5 @@
-import { Response, NextFunction } from 'express';
+import { Response, NextFunction, Request } from 'express';
 import { AuthorizationError } from '../errors/authorizationError';
-import { RequestWithUser } from './userAuth';
 
 /**
  * Verifica que la casa de la solicitud sea la misma que la del usuario.
@@ -13,7 +12,7 @@ import { RequestWithUser } from './userAuth';
  * 
  */
 
-export const checkHouse = (req: RequestWithUser, _res: Response, next: NextFunction): void => {
+export const checkHouse = (req: Request, _res: Response, next: NextFunction): void => {
   const houseParams = Number(req.params.houseId);
   const { houseId } = req.user;
 

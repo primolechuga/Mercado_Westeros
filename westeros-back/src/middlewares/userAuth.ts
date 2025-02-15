@@ -6,7 +6,7 @@ import { prisma } from '../libs/prisma';
 const secret = process.env.JWT_SECRET || 'Secret';
 
 /**
- * Guarda el usuario en la solicitud.
+ * Middleware que verifica la autenticación del usuario.
  * 
  * @param {Request} req - El objeto de la solicitud.
  * @param {Response} res - El objeto de respuesta.
@@ -18,9 +18,8 @@ const secret = process.env.JWT_SECRET || 'Secret';
  * 
  */
 
+export const userAuth  = async (req: Request, _res: Response, next: NextFunction) => {
 
-export const saveUser = async (req: Request, _res: Response, next: NextFunction) => {
-  
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
     throw new AuthenticationError('Token no encontrado');
