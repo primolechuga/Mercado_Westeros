@@ -1,22 +1,13 @@
 import { prisma } from '../../libs/prisma';
-import { NextFunction, Response } from 'express';
-import { RequestWithUser } from '../../middlewares/userAuth';
-
-
-/**
- * Obtiene los productos de una casa.
- * 
- * @param {RequestWithUser} req - El objeto de la solicitud.
- * @param {Response} res - El objeto de respuesta.
- * @param {NextFunction} _next - El siguiente middleware.
- * 
- * @returns {Promise<void>} - Los productos de la casa.
- * 
- */
+import { NextFunction, Response, Request } from 'express';
 
 //Este controlador debe usar el middleware para verificar la casa
-export const getByHouse = async (req: RequestWithUser, res: Response, _next : NextFunction ): Promise<void> => {
+export const getByHouse = async (req: Request, res: Response, _next: NextFunction) => {
   const houseId = Number(req.params.houseId);
+  const page = Number(req.query.page) || 1;
+  const pageSize = Number(req.query.pageSize) || 10;
+  const skip = (page - 1) * pageSize;
+
   const products = await prisma.productStore.findMany({
     where: {
       houseId
@@ -30,9 +21,21 @@ export const getByHouse = async (req: RequestWithUser, res: Response, _next : Ne
           name: true,
         }
       }
+    },
+    skip,
+    take: pageSize
+  });
+
+  const totalProducts = await prisma.productStore.count({
+    where: {
+      houseId
     }
   });
 
-  res.json(products);
-
+  res.json({
+    totalProducts,
+    totalPages: Math.ceil(totalProducts / pageSize),
+    currentPage: page,
+    products
+  });
 };

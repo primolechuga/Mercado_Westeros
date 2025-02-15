@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
 import { AuthenticationError } from '../errors/authorizationError';
 import { prisma } from '../libs/prisma';
-import { User } from '../types/usetType';
 const secret = process.env.JWT_SECRET || 'Secret';
 
 /**
@@ -19,11 +18,8 @@ const secret = process.env.JWT_SECRET || 'Secret';
  * 
  */
 
-export interface RequestWithUser extends Request {
-  user: User;
-}
 
-export const saveUser = async (req: RequestWithUser, _res: Response, next: NextFunction) => {
+export const saveUser = async (req: Request, _res: Response, next: NextFunction) => {
   
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
