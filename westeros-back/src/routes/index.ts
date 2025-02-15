@@ -4,10 +4,12 @@ import { houseRouter } from './house.routes';
 import { productRouter } from './product.routes';
 import { merchantsRouter } from './merchants.routes';
 import { Router } from 'express';
+import { userAuth } from '../middlewares/userAuth';
 
 
 const router = Router();
 
+router.use(userAuth);
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
 router.use('/house', houseRouter);

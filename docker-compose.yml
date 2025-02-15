@@ -16,13 +16,15 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./westeros-back:/usr/src/app
       - /usr/src/app/node_modules # Evita sobrescribir node_modules
     networks:
       - app-network
     command: >
       sh -c "npx prisma generate &&
              npx prisma migrate dev --name init &&
+             apk add --no-cache dos2unix && 
+             dos2unix /usr/src/app/src/scripts/init.sh && 
+             /usr/src/app/src/scripts/init.sh &&
              npm run dev"
 
   postgres:
