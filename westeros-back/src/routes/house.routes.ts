@@ -1,11 +1,16 @@
 import { Router } from 'express';
-import { modifyCap, getHouse, getMyHouse } from '../controllers/house';
+import { modifyCap, getHouse, getMyHouse, getAllHouses } from '../controllers/house';
 
 const houseRouter = Router();
 
+//General
+houseRouter.get('/', getAllHouses);
+
+
 houseRouter.get('/:id', getHouse);
-houseRouter.put('/:id', modifyCap);
 houseRouter.get('/myHouse', getMyHouse);
 
+//Maestre
+houseRouter.put('/:id', modifyCap);
 
 export { houseRouter };
