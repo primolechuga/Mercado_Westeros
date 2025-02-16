@@ -8,7 +8,11 @@ import cors from 'cors';
 import { errorHandler } from './middlewares/errorHandler';
 import bodyParser from 'body-parser';
 import { router } from './routes';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yaml';
 
+const file  = fs.readFileSync('./swagger.yaml', 'utf8');
+const swaggerDocument = YAML.parse(file);
 
 const app = express();
 dotenv.config();
@@ -38,6 +42,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use( router );
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));	
 app.use('/uploads', express.static('uploads'));
 app.use(errorHandler);
 

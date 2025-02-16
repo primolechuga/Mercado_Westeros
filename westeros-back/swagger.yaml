@@ -1,0 +1,392 @@
+openapi: 3.0.3
+info:
+  title: Mercado de Westeros
+  version: 1.0.0
+  description: Westeros es un sistema de subastas en línea que permite a los usuarios comprar y vender productos de las casas nobles de los Siete Reinos.
+  contact:
+    name: Equipo de desarrollo de Westeros
+tags:
+  - name: Usuarios
+    description: Operaciones relacionadas con los usuarios y la autenticación
+  - name: Productos
+    description: Operaciones relacionadas con los productos
+  - name: Subastas
+    description: Operaciones relacionadas con las subastas
+  - name: Mercaderes
+    description: Operaciones relacionadas con los mercaderes
+  - name: Casas
+    description: Operaciones relacionadas con las casas nobles
+  - name: Pujas
+    description: Operaciones relacionadas con las pujas
+paths:
+  /user/register:
+    post:
+      tags:
+        - Usuarios
+      summary: Crear usuario
+      description: Crea un nuevo usuario en el sistema, su rol por defecto es "Mercader".
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /auth/login:
+    post:
+      tags:
+        - Usuarios
+      summary: Iniciar sesión
+      description: Inicia sesión en el sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credenciales'
+      responses:
+        '200':
+          description: Sesión iniciada
+  /house:
+    get:
+      tags:
+        - Casas
+      summary: Listar casas
+      description: Lista todas las casas nobles de los Siete Reinos.
+      responses:
+        '200':
+          description: Casas listadas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+
+  /house/{id}:
+    get:
+      tags:
+        - Casas
+      summary: Obtener casa
+      description: Obtiene la información de una casa noble.
+      parameters:
+        - name: id
+          in: path
+          description: ID de la casa
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Casa obtenida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/House'
+    put:
+      tags:
+        - Casas
+      summary: Actualizar Tope
+      description: Actualiza el monto tope que un mercader puede tener en una casa.
+      parameters:
+        - name: id
+          in: path
+          description: ID de la casa
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cap:
+                  type: integer
+                  example: 100
+              required:
+                - cap
+      responses:
+        '200':
+          description: Casa actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/House'
+
+  /merchants/{houseId}:
+    get:
+      tags:
+        - Mercaderes
+      summary: Listar mercaderes por casa
+      description: Lista todos los mercaderes de una casa noble.
+      parameters:
+        - name: houseId
+          in: path
+          description: ID de la casa
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Mercaderes listados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    balance:
+                      type: integer
+                    houseId:
+                      type: integer
+                
+  /merchants/{id}:
+    delete:
+      tags:
+        - Mercaderes
+      summary: Eliminar mercader
+      description: Elimina un mercader del sistema.
+      parameters:
+        - name: id
+          in: path
+          description: ID del mercader
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Mercader eliminado
+
+  /product/{type}:
+    post:
+      tags:
+        - Productos
+      summary: Crear producto
+      description: Crea un nuevo producto en el sistema.
+      parameters:
+        - name: type
+          in: path
+          description: Tipo de Contenido para la imagen
+          required: true
+          schema:
+            type: string
+            enum: [product, house]
+      requestBody:
+        required: true
+        content:
+          form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Espada de acero valyrio
+                price:
+                  type: integer
+                  example: 1000
+                stock:
+                  type: integer
+                  example: 10
+                houseId:
+                  type: integer
+                  example: 1
+                  image:
+                    type: string
+                    format: binary
+              required:
+                - name
+                - price
+                - stock
+                - houseId
+      responses:
+        '201':
+          description: Producto creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+
+  /product/{houseId}/{:productId}:
+    put:
+      tags:
+        - Productos
+      summary: Actualizar Producto.
+      description: Actualiza el stock y precio de un producto (Solo Maestres).
+      parameters:
+        - name: houseId
+          in: path
+          description: ID de la casa
+          required: true
+          schema:
+            type: integer
+        - name: productId
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: integer
+                  example: 1000
+                stock:
+                  type: integer
+                  example: 10
+              required:
+                - price
+                - stock
+      responses:
+        '200':
+          description: Producto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+
+      security:
+        - bearerAuth: []
+      roles:
+        - Maestre
+  /product/{houseId}:
+    get:
+      tags:
+        - Productos
+      summary: Listar productos por casa
+      description: Lista todos los productos de una casa noble.
+      parameters:
+        - name: houseId
+          in: path
+          description: ID de la casa
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Productos listados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Juan Bo
+        email:
+          type: string
+          example: JuamBo@westeros.com
+        password:
+          type: string
+          example: 123456
+        houseId:
+          type: integer
+          example: 1
+      required:
+        - name
+        - email
+        - password
+        - houseId
+    Credenciales:
+      type: object
+      properties:
+        email:
+          type: string
+          example: JuamBo@westeros.com
+        password:
+          type: string
+          example: 123456
+      required:
+        - email
+        - password
+    House:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Stark
+        cap:
+          type: integer
+          example: 100
+        description:
+          type: string
+          example: La casa Stark de Invernalia es una de las casas nobles más antiguas de los Siete Reinos.
+        balance:
+          type: integer
+          example: 100000
+        imagePath:
+          type: string
+          example: /images/stark.jpg
+      required:
+        - id
+        - name
+        - cap
+        - description
+        - balance
+        - imagePath
+    Producto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Espada de acero valyrio
+        price:
+          type: integer
+          example: 1000
+        stock:
+          type: integer
+          example: 10
+        houseId:
+          type: integer
+          example: 1
+        type:
+          type: string
+          example: product
+        imagePath:
+          type: string
+          example: /images/espada.jpg
+      required:
+        - id
+        - name
+        - price
+        - stock
+        - houseId
+        - type
+        - imagePath
