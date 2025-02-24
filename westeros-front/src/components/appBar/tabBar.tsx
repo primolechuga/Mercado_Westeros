@@ -16,7 +16,7 @@ const roleBasedTabs: Record<string, { label: string; page?: string; subMenu?: { 
     { label: 'Mercaderes', page: '/merchants' },
     { label: 'Productos', page: '/products' },
     { label: 'Subastas', page: '/' },
-    { label: 'Solicitudes', page: '/userRequests' },
+    {label : 'Añadir producto', page: '/addProduct'}
   ],
   mercader: [
     { label: 'Subastas', page :'/'},

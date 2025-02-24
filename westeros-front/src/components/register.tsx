@@ -132,7 +132,7 @@ const Register: React.FC = () => {
             <InputLabel id="house-label">Casa</InputLabel>
             <Select
               labelId="house-label"
-              name="house"
+              name="houseId"
               value={formData.house}
               onChange={handleSelectChange}
               label="Casa"

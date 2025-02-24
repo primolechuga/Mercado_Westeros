@@ -5,14 +5,11 @@ import { Request, Response, NextFunction } from 'express';
 export const modifyProducStore = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
 
   const { price, stock } = req.body;
-  const { houseId, productId } = req.params;
+  const { productStoreId } = req.params;
     
   const productStore = await prisma.productStore.update({
     where: {
-      houseId_productId: {
-        houseId: parseInt(houseId),
-        productId: parseInt(productId)
-      }
+      id: parseInt(productStoreId)
     },
     data: {
       price: parseInt(price),

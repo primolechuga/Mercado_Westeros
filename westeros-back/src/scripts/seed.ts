@@ -1,9 +1,9 @@
 import { hashPassword } from '../utils/hashPassword';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../libs/prisma';
 import { houses } from './houses';
 import { products } from './products';
 
-const prisma = new PrismaClient();
+
 
 async function main() {
   // Crear casas

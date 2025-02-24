@@ -16,7 +16,7 @@ services:
     depends_on:
       - postgres
     volumes:
-     - ./westeros-back:/usr/src/app
+     - ./westeros-back:/usr/src/app:cached
       - /usr/src/app/node_modules # Evita sobrescribir node_modules
     networks:
       - app-network
@@ -53,7 +53,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./westeros-front:/usr/src/app
+      - ./westeros-front:/usr/src/app:cached
       - /usr/src/app/node_modules # Evita sobrescribir node_modules
     networks:
       - app-network

@@ -43,8 +43,6 @@ export const AppRoutes: React.FC = () => {
         <Route path="/merchants" element={<MerchantsPage />} />
         <Route path="/addProduct" element={<AddProductPage />} />
         <Route path="/house" element={<HousePage />} />
-        <Route path="/merchants" element={<MerchantsPage />} />
-        <Route path="/addProduct" element={<AddProductPage />} />
       </Route>
 
       {/* Ruta protegida solo para Mercader */}
@@ -53,6 +51,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/createAuction/:id" element={<CreateAuctionPage />} />
       <Route path="/productList" element={<ProductListPage />} />
       <Route path="/myBids" element={<MyBidsPage />} />
+      <Route path="/addProduct" element={<AddProductPage />} />
       <Route path="/myWonAuctions" element={<WonAuctionsPage />} />
     </Route>
 
