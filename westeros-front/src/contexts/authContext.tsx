@@ -6,7 +6,8 @@ interface User {
   email: string;
   name: string;
   id: string;
-  role: string; // Asegurar que el usuario tiene un rol
+  role: string;
+  houseId: number;
 }
 
 interface AuthContextType {
@@ -15,6 +16,7 @@ interface AuthContextType {
   role: string | null;
   login: (userData: AuthFormData) => Promise<void>;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -27,6 +29,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // Nuevo estado para evitar redirección prematura
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(parsedUser);
       setRole(parsedUser.role);
     }
+    setLoading(false); // Solo cambiar loading cuando termina el proceso
   }, []);
 
   const login = async (userData: AuthFormData) => {
@@ -49,9 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await fetch('http://localhost:4000/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
 
@@ -62,12 +64,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const responseBody = await response.json();
         const user = responseBody?.user;
 
-        localStorage.setItem('user', JSON.stringify(user)); // Guardar usuario en localStorage
+        localStorage.setItem('user', JSON.stringify(user));
         setIsAuthenticated(true);
         setUser(user);
         setRole(user.role);
 
-        navigate('/');
+        // Redirigir a la última página visitada o a una ruta según el rol
+        navigate(user.role === 'admin' ? '/admin' : '/dashboard');
       } else {
         const error = await response.json();
         alert(error.message);
@@ -88,13 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      isAuthenticated, 
-      user, 
-      role, 
-      login, 
-      logout 
-    }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, role, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

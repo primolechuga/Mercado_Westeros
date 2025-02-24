@@ -16,6 +16,7 @@ services:
     depends_on:
       - postgres
     volumes:
+     - ./westeros-back:/usr/src/app
       - /usr/src/app/node_modules # Evita sobrescribir node_modules
     networks:
       - app-network

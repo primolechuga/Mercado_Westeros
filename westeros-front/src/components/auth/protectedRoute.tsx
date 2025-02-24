@@ -6,21 +6,21 @@ interface ProtectedRouteProps {
   allowedRoles: string[];
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  allowedRoles 
-}) => {
-  const { isAuthenticated, role } = useAuth();
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
+  const { isAuthenticated, role, loading } = useAuth();
+
+  // Si aún está cargando, mostrar un spinner o mensaje
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   if (!isAuthenticated) {
-    // Redirige a login si no está autenticado
     return <Navigate to="/login" replace />;
   }
 
   if (!role || !allowedRoles.includes(role)) {
-    // Redirige a una página de acceso denegado si no tiene el rol correcto
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Renderiza las rutas protegidas
   return <Outlet />;
 };
