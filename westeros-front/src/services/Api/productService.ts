@@ -41,3 +41,16 @@ export const createProduct = async (type : String, product : Product) => {
   }
 };
 
+
+export const getProductsByHouse = async (houseId: number, page: number, pageSize: number) => {
+  try {
+    const response = await api.get(`product/${houseId}?page=${page}&pageSize=${pageSize}`);
+
+    return response.data;
+  } catch (error) {
+
+    console.error('Error getting products by house', error);
+    
+    throw error;
+  }
+};

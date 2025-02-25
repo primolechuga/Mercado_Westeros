@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TablePagination, Paper, Box } from '@mui/material';
+import { Product } from '../types/product';
 
 interface DataTableProps {
   data: any[]; // Los datos a mostrar
-  columns: { id: string; label: string }[]; // Las columnas de la tabla
+  columns: { id: string ; label: string }[]; // Las columnas de la tabla
   rowsPerPageOptions?: number[]; // Opcional: las opciones para las filas por página
 }
 
@@ -15,7 +16,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, rowsPerPageOptions
   // Filtrar los datos según la búsqueda
   const filteredData = data.filter(item =>
     columns.some(column =>
-      item[column.id].toString().toLowerCase().includes(searchQuery.toLowerCase())
+      item[column.id]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
@@ -55,7 +56,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, rowsPerPageOptions
                 .map((row, index) => (
                   <TableRow hover key={index}>
                     {columns.map((column) => (
-                      <TableCell key={column.id}>{row[column.id]}</TableCell>
+                      <TableCell key={column.id}>{String(row[column.id])}</TableCell>
                     ))}
                   </TableRow>
                 ))}

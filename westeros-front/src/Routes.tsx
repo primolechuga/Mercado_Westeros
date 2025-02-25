@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './pages/HomePage';
 import LoginPage from './pages/LoginPage';  // Usar LoginPage
 import RegisterPage from './pages/RegisterPage'; // Página de registro
-import ProductTablePage from './pages/ProductTablePage'; // Página de tabla de productos
+import{ ProductTablePage } from './pages/ProductTablePage'; // Página de tabla de productos
 import UserRequestsPage from './pages/UserRequestsTable';
 import MerchantsPage from './pages/MerchantsPage';
 import AddProductPage from './pages/AddProductPage';
@@ -39,7 +39,7 @@ export const AppRoutes: React.FC = () => {
       {/* Rutas protegidas solo para Maestre*/}
 
       <Route element={<ProtectedRoute allowedRoles={['maestre']} />}>
-        <Route path="/userRequests" element={<UserRequestsPage />} />
+        {/* <Route path="/userRequests" element={<UserRequestsPage />} /> */}
         <Route path="/merchants" element={<MerchantsPage />} />
         <Route path="/addProduct" element={<AddProductPage />} />
         <Route path="/house" element={<HousePage />} />
