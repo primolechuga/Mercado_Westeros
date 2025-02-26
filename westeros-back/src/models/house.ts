@@ -1,5 +1,5 @@
-import { House } from '../../types/houseType';
-import { prisma } from '../../libs/prisma';
+import { House } from '../types/houseType';
+import { prisma } from '../libs/prisma';
 
 export const createHouse = async (house: House) => {
 
@@ -14,4 +14,13 @@ export const createHouse = async (house: House) => {
   });
 
   return newHouse;
+};
+
+export const getHouse = async (houseId: number) => {
+  const house = await prisma.house.findFirst({
+    where: {
+      id: houseId
+    }
+  });
+  return house;
 };

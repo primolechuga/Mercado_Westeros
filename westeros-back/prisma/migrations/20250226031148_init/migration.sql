@@ -55,7 +55,11 @@ CREATE TABLE "Auction" (
     "basePrice" DOUBLE PRECISION NOT NULL,
     "quantity" INTEGER NOT NULL,
     "increment" DOUBLE PRECISION NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+    "initialPrice" DOUBLE PRECISION NOT NULL,
     "probability" DOUBLE PRECISION NOT NULL,
+    "winnerId" TEXT,
+    "ownerId" TEXT NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "isActive" BOOLEAN NOT NULL,
 
@@ -77,6 +81,9 @@ CREATE TABLE "BidHistory" (
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductStore_houseId_productId_key" ON "ProductStore"("houseId", "productId");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "House"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -91,6 +98,12 @@ ALTER TABLE "Auction" ADD CONSTRAINT "Auction_productId_fkey" FOREIGN KEY ("prod
 
 -- AddForeignKey
 ALTER TABLE "Auction" ADD CONSTRAINT "Auction_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "House"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Auction" ADD CONSTRAINT "Auction_winnerId_fkey" FOREIGN KEY ("winnerId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Auction" ADD CONSTRAINT "Auction_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BidHistory" ADD CONSTRAINT "BidHistory_auctionId_fkey" FOREIGN KEY ("auctionId") REFERENCES "Auction"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -23,6 +23,8 @@ model User {
   role         Role         @default(MERCADER)
   house        House        @relation(fields: [houseId], references: [id])
   BidHistories BidHistory[]
+  Auctions     Auction[]    @relation("AuctionOwner")
+  AuctionsWon  Auction[]    @relation("AuctionWinner")
 }
 
 enum Role {
@@ -59,21 +61,29 @@ model ProductStore {
   stock     Int
   house     House   @relation(fields: [houseId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([houseId, productId])
 }
 
 model Auction {
-  id          Int          @id @default(autoincrement())
-  houseId     Int
-  productId   Int
-  basePrice   Float
-  quantity    Int
-  increment   Float
-  probability Float
-  endDate     DateTime
-  isActive    Boolean
-  product     Product      @relation(fields: [productId], references: [id])
-  house       House        @relation(fields: [houseId], references: [id])
-  bidHistory  BidHistory[]
+  id           Int          @id @default(autoincrement())
+  houseId      Int
+  productId    Int
+  basePrice    Float
+  quantity     Int
+  increment    Float
+  price        Float // Current price
+  initialPrice Float
+  probability  Float
+  winnerId     String?
+  ownerId      String
+  endDate      DateTime
+  isActive     Boolean
+  product      Product      @relation(fields: [productId], references: [id])
+  house        House        @relation(fields: [houseId], references: [id])
+  bidHistory   BidHistory[]
+  winner       User?        @relation("AuctionWinner", fields: [winnerId], references: [id])
+  owner        User         @relation("AuctionOwner", fields: [ownerId], references: [id])
 }
 
 model BidHistory {
