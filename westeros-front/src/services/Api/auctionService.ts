@@ -12,3 +12,13 @@ export const createAuction = async (auction : Auction) => {
     throw error;
   }
 };
+
+export const getMyAuctions = async (userId : string) => {
+  try {
+    const response = await api.get(`auction/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener Subastas', error);
+    throw error;
+  }
+};

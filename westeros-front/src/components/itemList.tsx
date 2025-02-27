@@ -2,43 +2,69 @@ import { Box, TextField, MenuItem, Pagination, FormControlLabel, Checkbox } from
 import React, { useState } from "react";
 import { AuctionItemType, AuctionItem } from "./item";
 
-// Definimos las props del componente para incluir el nuevo parámetro
+// Definimos la interfaz de los datos que vienen del backend
+interface AuctionFromBackend {
+  id: number;
+  basePrice: number;
+  endDate: string;
+  probability: number;
+  isActive: boolean;
+  winnerId: string | null;
+  product: {
+    name: string;
+    imagePath: string;
+    id: number;
+    description: string;
+  };
+}
+
+// Actualizamos las props para recibir el formato del backend
 interface AuctionListProps {
-  items: AuctionItemType[];
-  showInactiveFilter?: boolean; // Parámetro opcional para mostrar u ocultar el filtro
+  items: AuctionFromBackend[];
+  showInactiveFilter?: boolean;
 }
 
 export const AuctionList: React.FC<AuctionListProps> = ({ items, showInactiveFilter = false }) => {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<keyof AuctionItemType>("title");
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [showInactive, setShowInactive] = useState(false); // Estado para mostrar solo inactivos
+  const [showInactive, setShowInactive] = useState(false);
   const itemsPerPage = 5;
 
-  // Filtrar y ordenar los elementos
-  const filteredItems = items
+  // Transformamos los datos del backend al formato que espera AuctionItem
+  const displayItems: AuctionItemType[] = items.map(auction => {
+    const endDateObj = new Date(auction.endDate);
+    console.log(endDateObj);
+    const timeLeftAuction = Math.floor((endDateObj.getTime() - Date.now()) / 1000);
+    console.log(timeLeftAuction);
+    return {
+      id: auction.id.toString(),
+      image: auction.product.imagePath,
+      title: auction.product.name,
+      description: auction.product.description,
+      lastBid: auction.basePrice, // Utilizamos basePrice como última puja
+      endDate: endDateObj,
+      timeLeftAuction: timeLeftAuction > 0 ? timeLeftAuction : 0,
+      status: auction.isActive ? "active" : "finished"
+    };
+  });
+
+  // Filtrado y ordenamiento
+  const filteredItems = displayItems
     .filter(item => (showInactive ? item.status !== "active" : true))
     .sort((a, b) => {
       const aValue = a[sortBy];
       const bValue = b[sortBy];
-
-      if (aValue === undefined || bValue === undefined) {
-        return 0;
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
       }
-
-      const comparison = aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-      return sortDirection === "asc" ? comparison : -comparison;
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+      }
+      return 0;
     });
 
   const paginatedItems = filteredItems.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-
-  const handleSortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSortBy(event.target.value as keyof AuctionItemType);
-  };
-
-  const handleSortDirectionChange = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-  };
 
   return (
     <Box sx={{ maxWidth: 800, margin: "0 auto" }}>
@@ -47,7 +73,7 @@ export const AuctionList: React.FC<AuctionListProps> = ({ items, showInactiveFil
           select
           label="Ordenar por"
           value={sortBy}
-          onChange={handleSortChange}
+          onChange={(event) => setSortBy(event.target.value as keyof AuctionItemType)}
           sx={{ width: "40%", marginRight: 1 }}
         >
           <MenuItem value="title">Título</MenuItem>
@@ -55,19 +81,13 @@ export const AuctionList: React.FC<AuctionListProps> = ({ items, showInactiveFil
           <MenuItem value="timeLeftAuction">Tiempo Restante</MenuItem>
         </TextField>
 
-        <MenuItem onClick={handleSortDirectionChange} sx={{ width: "30%", textAlign: "center", cursor: "pointer" }}>
+        <MenuItem onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")} sx={{ width: "30%", textAlign: "center", cursor: "pointer" }}>
           {sortDirection === "asc" ? "Ascendente" : "Descendente"}
         </MenuItem>
 
-        {/* Mostrar el checkbox solo si showInactiveFilter es true */}
         {showInactiveFilter && (
           <FormControlLabel
-            control={
-              <Checkbox
-                checked={showInactive}
-                onChange={() => setShowInactive(!showInactive)}
-              />
-            }
+            control={<Checkbox checked={showInactive} onChange={() => setShowInactive(!showInactive)} />}
             label="Solo Finalizados"
             sx={{ marginLeft: 2 }}
           />
