@@ -5,6 +5,7 @@ import { getProduct } from './product';
 
 export const createAuction = async (houseId: number, productId: number, basePrice: number, endDate: Date, quantity :number, userId: string ) => {
   const product = await getProduct(houseId, productId);
+  console.log(product);
   const productStore = await prisma.productStore.findFirst({
     where: {
       houseId,
@@ -20,7 +21,7 @@ export const createAuction = async (houseId: number, productId: number, basePric
   const auction = await prisma.auction.create({
     data: {
       basePrice,
-      endDate,
+      endDate : new Date(endDate).toISOString(),
       productId,
       houseId,
       quantity,

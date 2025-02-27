@@ -4,6 +4,7 @@ import { houseRouter } from './house.routes';
 import { productRouter } from './product.routes';
 import { merchantsRouter } from './merchants.routes';
 import { Router } from 'express';
+import { auctionRouter } from './auction.routes';
 // import { userAuth } from '../middlewares/userAuth';
 
 
@@ -14,6 +15,7 @@ router.use('/user', userRouter);
 router.use('/house', houseRouter);
 router.use('/product', productRouter);
 router.use('/merchants', merchantsRouter);
+router.use('/auction', auctionRouter);
 
 
 

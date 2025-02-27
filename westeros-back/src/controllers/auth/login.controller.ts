@@ -31,13 +31,13 @@ export const loginUser = async (req: Request, res: Response, _next: NextFunction
     throw new AuthenticationError('Usuario no encontrado'); // 'Usuario no encontrado' para mantener la seguridad
   }
 
-  let token = jwt.sign(
+  const token = jwt.sign(
     { id: user.id, name: user.name, email: user.email },
     process.env.JWT_SECRET || 'Secret',
     { expiresIn: '24h' }
   );
 
-  token = 'Bearer ' + token;
+  // token = 'Bearer ' + token;
   res.setHeader('authorization', token);
   res.status(200).json({ message: 'Usuario logueado correctamente',
     user: { id: user.id, name: user.name, email: user.email, role : user.role.toLowerCase(), houseId : user.houseId },

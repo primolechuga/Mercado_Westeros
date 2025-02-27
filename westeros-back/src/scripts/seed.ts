@@ -85,10 +85,31 @@ async function main() {
     ]
   });
 
+  //consultar todas las casas
+  const newHouses = await prisma.house.findMany();
+  //consultar todos los productos
+  const newsProducts = await prisma.product.findMany();
 
 
+
+  const productStorages = [];
+  for (const house of newHouses) {
+    for (const product of newsProducts) {
+      productStorages.push({
+        houseId: house.id,
+        productId: product.id,
+        price: Math.floor(Math.random() * 100000) + 1, // Precio aleatorio entre 1 y 100
+        stock: Math.floor(Math.random() * 100) + 1, // Stock aleatorio entre 1 y 100
+      });
+    }
+  }
+
+  await prisma.productStore.createMany({
+    data: productStorages
+  });
 
 }
+
 
 main()
   .catch((e) => {

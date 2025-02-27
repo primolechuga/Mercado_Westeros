@@ -5,7 +5,7 @@ import Home from './pages/HomePage';
 import LoginPage from './pages/LoginPage';  // Usar LoginPage
 import RegisterPage from './pages/RegisterPage'; // Página de registro
 import{ ProductTablePage } from './pages/ProductTablePage'; // Página de tabla de productos
-import UserRequestsPage from './pages/UserRequestsTable';
+// import UserRequestsPage from './pages/UserRequestsTable';// DESHABILITADO
 import MerchantsPage from './pages/MerchantsPage';
 import AddProductPage from './pages/AddProductPage';
 import { ProtectedRoute } from './components/auth/protectedRoute';
@@ -13,7 +13,7 @@ import { Unauthorized } from './pages/Unauthorized';
 import HousePage from './pages/HousePage';
 import AuctionPage from './pages/AuctionPage';
 import { MyAuctionsPage } from './pages/MyAuctionsPage';
-import CreateAuctionPage from './pages/createAuctionPage';
+import { CreateAuctionPage } from './pages/createAuctionPage';
 import ProductListPage from './pages/ProductListPage';
 import { MyBidsPage } from './pages/MyBidsPage';
 import { WonAuctionsPage } from './pages/WonAuctionsPage';

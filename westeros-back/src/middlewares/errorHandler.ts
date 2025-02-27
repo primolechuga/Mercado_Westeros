@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
-import { AuthenticationError } from '../errors/authorizationError';
+import { AuthenticationError, InvalidFieldError, NotFoundError, RequiredFieldError, AuthorizationError, OutOfRangeError, ValidationError } from '../errors';
 
 export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction): void => {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -28,6 +28,38 @@ export const errorHandler = (err: Error, req: Request, res: Response, _next: Nex
     res.status(401).send({ message: err.message });
     return;
   }
+
+  if (err instanceof AuthorizationError) {
+    res.status(403).send({ message: err.message });
+    return;
+  }
+
+  if (err instanceof NotFoundError) {
+    res.status(404).send({ message: err.message });
+    return;
+  }
+
+  if (err instanceof RequiredFieldError) {
+    res.status(400).send({ message: err.message });
+    return;
+  }
+
+  if (err instanceof InvalidFieldError) {
+    res.status(400).send({ message: err.message });
+    return;
+  }
+
+  if (err instanceof OutOfRangeError) {
+    res.status(400).send({ message: err.message });
+    return;
+  }
+
+  if (err instanceof ValidationError) {
+    res.status(400).send({ message: err.message });
+    return;
+  }
+
+  console.error(err);
 
   res.status(500).send({ message: 'Ha ocurrido un error inesperado' });
 };

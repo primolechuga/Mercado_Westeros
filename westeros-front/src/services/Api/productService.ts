@@ -54,3 +54,14 @@ export const getProductsByHouse = async (houseId: number, page: number, pageSize
     throw error;
   }
 };
+
+export const getProduct = async (productId: number ) => {
+  try {
+    const response = await api.get(`product/info/${productId}`);
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error getting product', error);
+    throw error;
+  }
+};

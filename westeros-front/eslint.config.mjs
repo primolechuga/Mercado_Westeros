@@ -29,10 +29,11 @@ export default [
       "import/no-anonymous-default-export": "error",
       "import/no-default-export": "error",
 
+
       "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
       "indent": ["error", 2, { "SwitchCase": 1 }],
-      "linebreak-style": ["error", "unix"],
-
+      "linebreak-style": 0,
+      
       "prefer-const": ["error", {
         "destructuring": "any",
         "ignoreReadBeforeAssign": false
@@ -49,22 +50,13 @@ export default [
       "object-curly-spacing": ["error", "always"],
       "arrow-spacing": ["error", { "before": true, "after": true }],
 
-      // 🚀 Añadir reglas para los saltos de línea y legibilidad:
-      "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }],
-      "padding-line-between-statements": [
-        "error",
-        { "blankLine": "always", "prev": "import", "next": "*" },
-        { "blankLine": "always", "prev": "*", "next": "return" },
-        { "blankLine": "always", "prev": "block-like", "next": "*" }
-      ],
-      "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
-
       "@typescript-eslint/naming-convention": [
         "error",
         { "selector": "variableLike", "format": ["camelCase", "UPPER_CASE"], "leadingUnderscore": "allow" },
         { "selector": "function", "format": ["camelCase"], "leadingUnderscore": "allow" },
         { "selector": "typeLike", "format": ["PascalCase"] }
-      ]
+      ],
+
     }
   }
 ];

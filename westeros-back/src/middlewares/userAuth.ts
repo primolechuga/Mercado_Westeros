@@ -21,6 +21,8 @@ const secret = process.env.JWT_SECRET || 'Secret';
 export const userAuth  = async (req: Request, _res: Response, next: NextFunction) => {
 
   const token = req.headers.authorization?.split(' ')[1];
+  console.log(token);
+  console.log(req.headers.authorization);
   if (!token) {
     throw new AuthenticationError('Token no encontrado');
   }
