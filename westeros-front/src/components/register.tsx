@@ -48,19 +48,40 @@ const Register: React.FC = () => {
     }));
   };
   
-  
+  const houseMapping: Record<string, number> = {
+    Stark: 1,
+    Lannister: 2,
+    Targaryen: 3,
+    Greyjoy: 4,
+    Tyrell: 5,
+    Martell: 6,
+    Tully: 7,
+    Arryn: 8,
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
+  
+    // Convertir el nombre de la casa en su respectivo houseId
+    const houseId = houseMapping[formData.house] || 1; // Valor por defecto si no se encuentra
+  
+    const payload = {
+      email: formData.email,
+      name: formData.name,
+      password: formData.password,
+      houseId, // Se envía el ID en lugar del nombre
+      address1: formData.address1,
+      address2: formData.address2,
+    };
+  
     const response = await fetch('http://localhost:4000/user/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify(payload),
     });
-
+  
     if (response.ok) {
       alert('Usuario creado exitosamente');
     } else {
