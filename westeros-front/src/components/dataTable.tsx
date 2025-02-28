@@ -1,31 +1,50 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TablePagination, Paper, Box } from '@mui/material';
-import { Product } from '../types/product';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  TablePagination,
+  Paper,
+  Box,
+} from '@mui/material';
 
 interface DataTableProps {
   data: any[]; // Los datos a mostrar
-  columns: { id: string ; label: string }[]; // Las columnas de la tabla
+  columns: { id: string; label: string }[]; // Las columnas de la tabla
   rowsPerPageOptions?: number[]; // Opcional: las opciones para las filas por página
 }
 
-const DataTable: React.FC<DataTableProps> = ({ data, columns, rowsPerPageOptions = [5, 10, 25] }) => {
+const DataTable: React.FC<DataTableProps> = ({
+  data,
+  columns,
+  rowsPerPageOptions = [5, 10, 25],
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Filtrar los datos según la búsqueda
-  const filteredData = data.filter(item =>
-    columns.some(column =>
+  const filteredData = data.filter((item) =>
+    columns.some((column) =>
       item[column.id]?.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
   // Manejo de la paginación
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Resetear a la primera página cuando cambian las filas por página
   };
@@ -56,7 +75,10 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns, rowsPerPageOptions
                 .map((row, index) => (
                   <TableRow hover key={index}>
                     {columns.map((column) => (
-                      <TableCell key={column.id}>{String(row[column.id])}</TableCell>
+                      <TableCell key={column.id}>
+                        {/* Renderizar directamente el valor sin convertirlo a cadena */}
+                        {row[column.id]}
+                      </TableCell>
                     ))}
                   </TableRow>
                 ))}

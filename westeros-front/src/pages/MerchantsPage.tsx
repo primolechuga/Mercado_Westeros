@@ -1,36 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import DataTable from '../components/dataTable';
 import LogoAppBar from '../components/logoAppBar';
-import { Button } from '@mui/material';
-import RemoveMerchant from '@mui/icons-material/PersonRemove'; // Importar el ícono
+import { Button, CircularProgress } from '@mui/material';
+import RemoveMerchant from '@mui/icons-material/PersonRemove';
 
-// Datos de ejemplo para los mercaderes
-const merchantsData = [
-  { id: 1, name: 'Mercader A', house: 'Stark', rating: 4.5 },
-  { id: 2, name: 'Mercader B', house: 'Lannister', rating: 3.9 },
-  { id: 3, name: 'Mercader C', house: 'Tyrell', rating: 4.2 },
-  // Más datos...
-];
+interface Merchant {
+  id: string;
+  name: string;
+  email: string;
+  balance: number;
+}
 
-// Definición de las columnas para la tabla
 const merchantsColumns = [
   { id: 'id', label: 'ID' },
   { id: 'name', label: 'Nombre del Mercader' },
-  { id: 'house', label: 'Casa' },
-  { id: 'rating', label: 'Calificación' },
-  { id: 'actions', label: 'Acciones' }, // Nueva columna para los botones
+  { id: 'email', label: 'Correo' },
+  { id: 'balance', label: 'Saldo' },
+  { id: 'role', label: 'Rol' }, // Antes era `house`
+  { id: 'actions', label: 'Acciones' },
 ];
 
 const MerchantsPage: React.FC = () => {
-  // Estado para manejar los mercaderes
-  const [merchants, setMerchants] = useState(merchantsData);
+  const { houseId } = useParams();
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Función para eliminar un mercader
-  const handleRemoveMerchant = (id: number) => {
-    setMerchants(merchants.filter(merchant => merchant.id !== id));
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userHouseId = user.houseId;
+    
+    console.log('House ID obtenido:', userHouseId);
+    
+    if (!userHouseId) {
+      setError('No se encontró una casa asociada al usuario.');
+      setLoading(false);
+      return;
+    }
+
+    fetch(`http://localhost:4000/merchants/${userHouseId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Datos obtenidos:', data);
+        if (!Array.isArray(data.data)) {
+          throw new Error('Respuesta inesperada de la API');
+        }
+        // Filtrar la clave "houseId" para que no se muestre en la tabla
+        const filteredMerchants = data.data.map(({ houseId, ...rest }: { houseId: number; [key: string]: any }) => rest);
+        setMerchants(filteredMerchants);
+      })
+      .catch((error) => {
+        console.error('Error al obtener mercaderes:', error);
+        setError(error.message);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleRemoveMerchant = async (merchantId: string) => {
+    try {
+      const response = await fetch(`http://localhost:4000/merchants/${merchantId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Error al eliminar el mercader');
+
+      setMerchants((prevMerchants) => prevMerchants.filter(merchant => merchant.id !== merchantId));
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  // Agregar la columna de botones a cada mercader
   const merchantsWithActions = merchants.map(merchant => ({
     ...merchant,
     actions: (
@@ -38,7 +78,7 @@ const MerchantsPage: React.FC = () => {
         variant="contained"
         color="secondary"
         onClick={() => handleRemoveMerchant(merchant.id)}
-        startIcon={<RemoveMerchant />} 
+        startIcon={<RemoveMerchant />}
       >
         Sacar
       </Button>
@@ -48,8 +88,14 @@ const MerchantsPage: React.FC = () => {
   return (
     <div style={{ marginTop: '80px' }}>
       <LogoAppBar />
-      <h1>Mercaderes</h1> {/* Título antes de la tabla */}
-      <DataTable data={merchantsWithActions} columns={merchantsColumns} />
+      <h1>Mercaderes de la Casa {houseId}</h1>
+
+      {loading && <CircularProgress />}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {!loading && !error && (
+        <DataTable data={merchantsWithActions} columns={merchantsColumns} />
+      )}
     </div>
   );
 };
