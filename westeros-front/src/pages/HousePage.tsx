@@ -1,26 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import HouseCard from '../components/houseCard';
 import { Container, Box } from '@mui/material';
-import LogoAppBar from '../components/logoAppBar';
+// import LogoAppBar from '../components/logoAppBar';
+import { useAuth } from '../contexts/authContext';
+import { getHouseById } from '../services/Api/houseService';
+import { House } from '../types/house';
 
-const HousePage: React.FC = () => {
+export const HousePage: React.FC = () => {
+  const { user } = useAuth();
+  const [house, setHouse] = useState<House | null>(null);
+
+  useEffect(() => {
+    const fetchHouse = async () => {
+      if (user) {
+        try {
+          const data = await getHouseById(user.houseId);
+          setHouse(data);
+        } catch (error) {
+          console.error('Error fetching house data', error);
+        }
+      }
+    };
+
+    fetchHouse();
+  }, [user]);
+
   return (
     <Container>
-      <LogoAppBar />
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
-        mt={20} // Espaciado superior opcional
-      >
-        <HouseCard
-          imageUrl="https://i0.wp.com/xn--lacompaialibredebraavos-yhc.com/wp-content/uploads/2018/09/lino-drieghe-il-winterfell-2014-linodrieghe.jpg?fit=1920%2C1279&ssl=1"
-          houseName="Casa Stark"
-          description="La Casa Stark de Invernalia es una casa noble del Norte. Su asentamiento es Invernalia. Durante siglos, fue la casa principal del Norte y su linaje se extiende hasta los Primeros Hombres, gobernando el Norte como reyes por derecho propio. Su emblema es un lobo huargo de cenizo corriendo sobre campo de plata. Su lema es Se acerca el Invierno. Su mandoble ancestral de acero valyrio se llamaba Hielo."
-          onValueChange={(value) => console.log('Valor ingresado:', value)}
-          onButton1Click={() => console.log('Botón 1 presionado')}
-          onButton2Click={() => console.log('Botón 2 presionado')}
-        />
+      {/*<LogoAppBar />*/}
+      <Box display="flex" justifyContent="center" alignItems="center" mt={20}>
+        {house ? (
+          <HouseCard
+            imageUrl={house.imagePath}
+            houseName={house.name}
+            description={house.description}
+            onValueChange={(value) => console.log('Valor ingresado:', value)}
+            onButton1Click={() => console.log('Botón 1 presionado')}
+            onButton2Click={() => console.log('Botón 2 presionado')}
+          />
+        ) : (
+          <p>Cargando información de la casa...</p>
+        )}
       </Box>
     </Container>
   );
