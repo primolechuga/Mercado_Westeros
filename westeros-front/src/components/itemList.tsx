@@ -33,7 +33,9 @@ export const AuctionList: React.FC<AuctionListProps> = ({ items, showInactiveFil
 
   // Transformamos los datos del backend al formato que espera AuctionItem
   const displayItems: AuctionItemType[] = items.map(auction => {
-    const endDateObj = new Date(auction.endDate);
+    console.log(auction.endDate);
+    let endDateObj = new Date(auction.endDate);
+    endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
     console.log(endDateObj);
     const timeLeftAuction = Math.floor((endDateObj.getTime() - Date.now()) / 1000);
     console.log(timeLeftAuction);
