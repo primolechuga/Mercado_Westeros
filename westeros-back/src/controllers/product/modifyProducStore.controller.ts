@@ -9,7 +9,7 @@ export const modifyProducStore = async (req: Request, res: Response, _next: Next
     
   const productStore = await prisma.productStore.update({
     where: {
-      id: parseInt(productStoreId)
+      id: parseInt(productStoreId),
     },
     data: {
       price: parseInt(price),

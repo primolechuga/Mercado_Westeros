@@ -6,7 +6,7 @@ import { Button, CircularProgress } from '@mui/material';
 import RemoveMerchant from '@mui/icons-material/PersonRemove';
 
 interface Merchant {
-  id: string;
+  id: number;
   name: string;
   email: string;
   balance: number;
@@ -57,7 +57,7 @@ const MerchantsPage: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleRemoveMerchant = async (merchantId: string) => {
+  const handleRemoveMerchant = async (merchantId: number) => {
     try {
       const response = await fetch(`http://localhost:4000/merchants/${merchantId}`, {
         method: 'DELETE',

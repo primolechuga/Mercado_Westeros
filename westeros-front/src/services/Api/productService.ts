@@ -65,3 +65,16 @@ export const getProduct = async (productId: number ) => {
     throw error;
   }
 };
+
+const updateProduct = async (houseId: number, productId: number, updateData: { price?: number; stock?: number }) => {
+  const response = await fetch(`http://localhost:4000/product/${houseId}/${productId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updateData),
+  });
+  return response;
+};
+
+export { updateProduct };
