@@ -27,7 +27,8 @@ export const AppRoutes: React.FC = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route path="/auctionPage" element={<AuctionPage />} />
+      <Route path="/auctionPage/:id" element={<AuctionPage />} />
+
       
 
       {/* Rutas protegidas */}

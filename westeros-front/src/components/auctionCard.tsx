@@ -6,13 +6,14 @@ interface AuctionCardProps {
   prod_name: string;
   description: string;
   basePrice: number;
-  lastBid: number;
+  price: number;
   house: string;
   onBid: (bidValue: number) => void;
 }
 
-const AuctionCard: React.FC<AuctionCardProps> = ({ imageUrl, prod_name, description, basePrice, lastBid, house, onBid }) => {
+const AuctionCard: React.FC<AuctionCardProps> = ({ imageUrl, prod_name, description, basePrice, price, house, onBid }) => {
   const [bidValue, setBidValue] = useState("");
+  const [isClicked, setIsClicked] = useState(false);
 
   const handleBidChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBidValue(event.target.value);
@@ -20,7 +21,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({ imageUrl, prod_name, descript
 
   const handleBidSubmit = () => {
     const bidAmount = parseFloat(bidValue);
-    if (!isNaN(bidAmount) && bidAmount > lastBid) {
+    if (!isNaN(bidAmount) && bidAmount > price) {
       onBid(bidAmount);
       setBidValue("");
     } else {
@@ -29,27 +30,43 @@ const AuctionCard: React.FC<AuctionCardProps> = ({ imageUrl, prod_name, descript
   };
 
   return (
-    <Card sx={{ maxWidth: 1000, padding: 3, borderRadius: 2, boxShadow: 3 }}>
-      <Box 
-        sx={{ 
-          display: "flex", 
-          flexDirection: { xs: "column", sm: "row" }, // Column for mobile, row for larger screens
+    <Card
+      onMouseDown={() => setIsClicked(true)}
+      onMouseUp={() => setIsClicked(false)}
+      onMouseLeave={() => setIsClicked(false)}
+      sx={{
+        maxWidth: 1000,
+        padding: 3,
+        borderRadius: 2,
+        boxShadow: 3,
+        cursor: "pointer",
+        transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, filter 0.2s ease-in-out, opacity 0.1s ease-in-out",
+        "&:hover": {
+          transform: "scale(1.05)",
+          boxShadow: 6,
+          filter: "brightness(90%)"
+        },
+        opacity: isClicked ? 0.7 : 1
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           alignItems: "center"
         }}
       >
-        {/* Imagen */}
         <CardMedia
           component="img"
           image={imageUrl}
           alt="Producto en subasta"
           sx={{
-            width: { xs: "100%", sm: 400 }, // Full width on mobile, fixed size on larger screens
-            height: { xs: "auto", sm: 400 }, // Maintain aspect ratio on mobile
+            width: { xs: "100%", sm: 400 },
+            height: { xs: "auto", sm: 400 },
             borderRadius: 2
           }}
         />
-        
-        {/* Contenido */}
+
         <CardContent sx={{ flexGrow: 1, textAlign: { xs: "center", sm: "left" } }}>
           <Typography variant="h5" gutterBottom>
             {prod_name}
@@ -64,7 +81,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({ imageUrl, prod_name, descript
             <strong>Precio Base:</strong> ${basePrice}
           </Typography>
           <Typography variant="body1" sx={{ mb: 2 }}>
-            <strong>Última Puja:</strong> ${lastBid}
+            <strong>Última Puja:</strong> ${price}
           </Typography>
           <TextField
             label="Ingrese su puja"

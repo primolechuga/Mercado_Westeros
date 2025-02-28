@@ -1,84 +1,73 @@
-import React from 'react';
-// import PrimarySearchAppBar from '../components/navBar';
+import React, { useState, useEffect } from 'react';
 import { Container, Box } from '@mui/material';
 import FloatingChat from '../components/floatchat';
 import HorizontalScroll from '../components/HomeItemList/HomeItemList';
-import imagen from '../assets/imagen.jpeg';
+import { getActiveAuctions } from '../services/Api/auctionService';
+import { AuctionItemType } from '../components/item'; // Asegúrate de que la ruta sea correcta
 
-// import LinkTab from '../components/appBar/tabBar';
-// import NavBar from '../components/buttonNav';
+// Definición de la interfaz según el formato que devuelve el backend
+interface AuctionFromBackend {
+  id: number;
+  basePrice: number;
+  endDate: string;
+  probability: number;
+  isActive: boolean;
+  winnerId: string | null;
+  product: {
+    name: string;
+    imagePath: string;
+    id: number;
+    description: string;
+  };
+}
+
+// Función para transformar el objeto del backend al formato que espera AuctionItem
+const transformAuction = (auction: AuctionFromBackend): AuctionItemType => {
+  let endDateObj = new Date(auction.endDate);  
+  endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
+  const timeLeftAuction = Math.max(Math.floor((endDateObj.getTime() - Date.now()) / 1000), 0);
+  return {
+    id: auction.id.toString(),
+    image: auction.product.imagePath,
+    title: auction.product.name,
+    description: auction.product.description,
+    lastBid: auction.basePrice,
+    timeLeftAuction,
+    endDate: endDateObj, // Puedes mantenerlo como Date o string según tus necesidades
+    status: auction.isActive ? "active" : "finished"
+  };
+};
 
 const HomePage: React.FC = () => {
-  const mockItems = [
-    {
-      id: '1',
-      image: imagen,
-      title: 'Cámara Nikon D3500',
-      description: 'Cámara DSLR perfecta para principiantes.',
-      lastBid: 450.99,
-      timeLeftAuction: 20,
-      endDate: new Date(),
-      status: 'active',
-    },
-    {
-      id: '2',
-      image: imagen,
-      title: 'iPhone 13 Pro Max',
-      description: '128GB, excelente estado.',
-      lastBid: 999.99,
-      timeLeftAuction: 7200,
-      endDate: new Date(),
-      status: 'active',
-    },
-    {
-      id: '3',
-      image: imagen,
-      title: 'La mera Ratota',
-      description: '128GB, excelente estado.',
-      lastBid: 999.99,
-      timeLeftAuction: 7200,
-      endDate: new Date(),
-      status: 'active',
-    },
+  const [auctionsPrice, setAuctionsPrice] = useState<AuctionItemType[]>([]);
+  const [auctionsDefault, setAuctionsDefault] = useState<AuctionItemType[]>([]);
+  const [auctionsDate, setAuctionsDate] = useState<AuctionItemType[]>([]);
 
-    {
-      id: '4',
-      image: imagen,
-      title: 'El JuanBoloncho',
-      description: '128GB, excelente estado.',
-      lastBid: 999.99,
-      timeLeftAuction: 7200,
-      endDate: new Date(),
-      status: 'active',
-    },
-    {
-      id: '5',
-      image: imagen,
-      title: 'El JuanBoloncho',
-      description: '128GB, excelente estado.',
-      lastBid: 999.99,
-      timeLeftAuction: 7200,
-      endDate: new Date(),
-      status: 'active',
-    },
-    {
-      id: '6',
-      image: imagen,
-      title: 'El JuanBoloncho',
-      description: '128GB, excelente estado.',
-      lastBid: 999.99,
-      timeLeftAuction: 7200,
-      endDate: new Date(),
-      status: 'active',
-    },
-  ];
+  useEffect(() => {
+    const fetchAuctions = async () => {
+      try {
+        // Llamadas a la API con distintos parámetros de orden
+        const dataPrice: AuctionFromBackend[] = await getActiveAuctions("price");
+        const dataDefault: AuctionFromBackend[] = await getActiveAuctions("quantity"); // Orden normal (sin parámetro)
+        const dataDate: AuctionFromBackend[] = await getActiveAuctions("date");
+        
+        setAuctionsPrice(dataPrice.map(transformAuction));
+        setAuctionsDefault(dataDefault.map(transformAuction));
+        setAuctionsDate(dataDate.map(transformAuction));
+      } catch (error) {
+        console.error("Error fetching auctions:", error);
+      }
+    };
+
+    fetchAuctions();
+  }, []);
 
   return (
-    <section> {/* Semantic element */}
+    <section>
       <Box sx={{ paddingTop: '10px' }}>
-        <AuctionSection title="Últimas subastas publicadas" items={mockItems} />
-        <AuctionSection title="Basados en tus gustos" items={mockItems} />
-        <AuctionSection title="Última oportunidad para participar" items={mockItems} />
+        <AuctionSection title="Precios mas bajos" items={auctionsPrice} />
+        <AuctionSection title="Basados en tus gustos" items={auctionsDefault} />
+        <AuctionSection title="Última oportunidad para participar" items={auctionsDate} />
       </Box>
       <FloatingChat />
     </section>
@@ -87,26 +76,14 @@ const HomePage: React.FC = () => {
 
 interface AuctionSectionProps {
   title: string;
-  items: Array<{
-    id: string;
-    image: string;
-    title: string;
-    description: string;
-    lastBid: number;
-    timeLeftAuction: number;
-    endDate: Date;
-    status: string;
-  }>;
+  items: AuctionItemType[];
 }
 
 const AuctionSection: React.FC<AuctionSectionProps> = ({ title, items }) => (
   <Container sx={{ mt: 4 }}>
     <h2>{title}</h2>
-    <HorizontalScroll items={items} aria-label={title} /> {/* Add aria-label */}
+    <HorizontalScroll items={items} aria-label={title} />
   </Container>
 );
 
-
-
 export default HomePage;
-
