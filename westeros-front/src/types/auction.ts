@@ -5,3 +5,17 @@ export interface Auction {
     endDate: string;
     quantity: number;
 }
+export interface AuctionFromBackend {
+  id: number;
+  basePrice: number;
+  endDate: string;
+  probability: number;
+  isActive: boolean;
+  winnerId: string | null;
+  product: {
+    name: string;
+    imagePath: string;
+    id: number;
+    description: string;
+  };
+}

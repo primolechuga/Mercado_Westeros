@@ -4,25 +4,11 @@ import FloatingChat from '../components/floatchat';
 import HorizontalScroll from '../components/HomeItemList/HomeItemList';
 import { getActiveAuctions } from '../services/Api/auctionService';
 import { AuctionItemType } from '../components/item'; // Asegúrate de que la ruta sea correcta
+import{ AuctionFromBackend} from '../types/auction';
 
-// Definición de la interfaz según el formato que devuelve el backend
-interface AuctionFromBackend {
-  id: number;
-  basePrice: number;
-  endDate: string;
-  probability: number;
-  isActive: boolean;
-  winnerId: string | null;
-  product: {
-    name: string;
-    imagePath: string;
-    id: number;
-    description: string;
-  };
-}
 
 // Función para transformar el objeto del backend al formato que espera AuctionItem
-const transformAuction = (auction: AuctionFromBackend): AuctionItemType => {
+export const transformAuction = (auction: AuctionFromBackend): AuctionItemType => {
   let endDateObj = new Date(auction.endDate);  
   endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
   const timeLeftAuction = Math.max(Math.floor((endDateObj.getTime() - Date.now()) / 1000), 0);
@@ -74,12 +60,12 @@ const HomePage: React.FC = () => {
   );
 };
 
-interface AuctionSectionProps {
+export interface AuctionSectionProps {
   title: string;
   items: AuctionItemType[];
 }
 
-const AuctionSection: React.FC<AuctionSectionProps> = ({ title, items }) => (
+export const AuctionSection: React.FC<AuctionSectionProps> = ({ title, items }) => (
   <Container sx={{ mt: 4 }}>
     <h2>{title}</h2>
     <HorizontalScroll items={items} aria-label={title} />

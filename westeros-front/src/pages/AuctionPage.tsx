@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Container, Box, CircularProgress } from "@mui/material";
 import AuctionCard from "../components/auctionCard";
-import { getAuction } from "../services/Api/auctionService";
+import { getAuction, getActiveAuctions } from "../services/Api/auctionService";
 import { useParams } from "react-router-dom";
+import { AuctionItemType } from '../components/item'; // Asegúrate de que la ruta sea correcta
+import HorizontalScroll from '../components/HomeItemList/HomeItemList';
+import FloatingChat from '../components/floatchat';
+import { transformAuction, AuctionSection, AuctionSectionProps } from './HomePage';
 
 interface AuctionFromBackend {
   id: number;
@@ -27,20 +31,24 @@ interface AuctionFromBackend {
 }
 
 const AuctionPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Ahora el id viene de la URL
   const [auction, setAuction] = useState<AuctionFromBackend | null>(null);
-  const { id } = useParams<{ id: string }>();
+  const [auctionsPrice, setAuctionsPrice] = useState<AuctionItemType[]>([]);
 
   useEffect(() => {
     const fetchAuction = async () => {
       try {
+        // Usa el id de la URL para obtener la subasta actual
         const data: AuctionFromBackend = await getAuction(Number(id));
+        const dataPrice: AuctionFromBackend[] = await getActiveAuctions("price");
+        setAuctionsPrice(dataPrice.map(transformAuction));
         setAuction(data);
       } catch (error) {
         console.error("Error fetching auction:", error);
       }
     };
     fetchAuction();
-  }, []);
+  }, [id]); // Se ejecuta cada vez que cambia el id
 
   const handleBid = (bidValue: number) => {
     console.log("Nueva puja recibida:", bidValue);
@@ -66,13 +74,18 @@ const AuctionPage: React.FC = () => {
           description={auction.product.description}
           basePrice={auction.basePrice}
           price={auction.price}
-          // Si cuentas con el nombre de la casa, úsalo; en su defecto, mostramos el houseId.
           house={`Casa ${auction.houseId}`}
+          endDate={auction.endDate}
           onBid={handleBid}
         />
       </Box>
+      <section>
+        <Box sx={{ paddingTop: '10px' }}>
+          <AuctionSection title="Precios mas bajos" items={auctionsPrice} />
+        </Box>
+        <FloatingChat />
+      </section>
     </Container>
-    
   );
 };
 
