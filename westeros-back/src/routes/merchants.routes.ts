@@ -4,6 +4,6 @@ import { getMerchants, deleteMerchants } from '../controllers/merchants';
 const merchantsRouter = Router();
 
 merchantsRouter.get('/:houseId', getMerchants);
-merchantsRouter.delete('/:id', deleteMerchants);
+merchantsRouter.delete('/:merchantId', deleteMerchants);
 
 export { merchantsRouter };
