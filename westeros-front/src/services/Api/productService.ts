@@ -1,80 +1,69 @@
-//Funciones para consumir los servicios de productos
 import { api } from './api';
-
 import { Product } from '../../types/product';
 
-/*
-*Crea un nuevo producto
-* POST /products/{type}
-*/
-
-export const createProduct = async (type : String, product : Product) => {
+// Crear un producto
+export const createProduct = async (type: string, product: Product) => {
   try {
-
     const formData = new FormData();
 
-    // Agrega el archivo de imagen al FormData
     if (product.image) {
       formData.append('image', product.image);
     }
 
-    // Agrega el resto de campos al FormData
     formData.append('name', product.name);
     formData.append('description', product.description);
     formData.append('basePrice', product.basePrice.toString());
     formData.append('stock', product.stock.toString());
     formData.append('houseId', product.houseId.toString());
 
-    const response = await api.post(`product/${type}`, formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+    const response = await api.post(`product/${type}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
     return response.data;
-
   } catch (error) {
-    console.error('Error creating product', error);
+    console.error('Error creando producto', error);
     throw error;
   }
 };
 
-
+// Obtener productos por houseId
 export const getProductsByHouse = async (houseId: number, page: number, pageSize: number) => {
   try {
     const response = await api.get(`product/${houseId}?page=${page}&pageSize=${pageSize}`);
-
     return response.data;
   } catch (error) {
-
-    console.error('Error getting products by house', error);
-    
+    console.error('Error obteniendo productos', error);
     throw error;
   }
 };
 
-export const getProduct = async (productId: number ) => {
+// Obtener un solo producto por ID
+export const getProduct = async (productId: number) => {
   try {
     const response = await api.get(`product/info/${productId}`);
-    
     return response.data;
   } catch (error) {
-    console.error('Error getting product', error);
+    console.error('Error obteniendo producto', error);
     throw error;
   }
 };
 
-const updateProduct = async (houseId: number, productId: number, updateData: { price?: number; stock?: number }) => {
-  const response = await fetch(`http://localhost:4000/product/${houseId}/${productId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updateData),
-  });
-  return response;
+// Actualizar producto
+export const updateProduct = async (houseId: number, productId: number, data: { stock?: number; price?: number }) => {
+  try {
+    const payload = {
+      stock: data.stock ?? -1,
+      price: data.price ?? -1,
+    };
+
+    const response = await api.put(`product/${houseId}/${productId}`, payload);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error actualizando producto', error);
+    throw error;
+  }
 };
 
-export { updateProduct };
+

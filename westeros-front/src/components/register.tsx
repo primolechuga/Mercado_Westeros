@@ -51,12 +51,13 @@ const Register: React.FC = () => {
   const houseMapping: Record<string, number> = {
     Stark: 1,
     Lannister: 2,
-    Targaryen: 3,
-    Greyjoy: 4,
-    Tyrell: 5,
-    Martell: 6,
-    Tully: 7,
+    Baratheon: 3,
+    Tyrell: 4,
+    Martell: 5,
+    Tully: 6,
+    Targaryen: 7,
     Arryn: 8,
+    Greyjoy: 9,
   };
 
   const handleSubmit = async (e: FormEvent) => {

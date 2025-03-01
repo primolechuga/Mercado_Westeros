@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from '../components/dataTable';
-import { getProductsByHouse } from '../services/Api/productService';
+import { getProductsByHouse, updateProduct } from '../services/Api/productService';
 import { useAuth } from '../contexts/authContext';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -20,7 +20,7 @@ interface DataProps {
   name: string;
   price: number;
   stock: number;
-  actions?: JSX.Element; // Propiedad para los botones
+  actions?: JSX.Element;
 }
 
 export const ProductTablePage: React.FC = () => {
@@ -28,18 +28,11 @@ export const ProductTablePage: React.FC = () => {
   const [productData, setProductData] = useState<DataProps[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [formValues, setFormValues] = useState({
-    price: 0,
-    stock: 0
-  });
+  const [formValues, setFormValues] = useState({ price: 0, stock: 0 });
 
-  // Función para abrir el modal con los valores actuales
   const handleOpenModal = (product: DataProps) => {
     setSelectedProductId(product.id);
-    setFormValues({
-      price: product.price,
-      stock: product.stock
-    });
+    setFormValues({ price: product.price, stock: product.stock });
     setOpenModal(true);
   };
 
@@ -49,55 +42,32 @@ export const ProductTablePage: React.FC = () => {
     setFormValues({ price: 0, stock: 0 });
   };
 
-  // Función para actualizar el producto
+  // Función para actualizar el producto usando productService
   const handleUpdate = async () => {
     if (selectedProductId === null || !user) return;
 
-    console.log('Sending update with:', {
-      houseId: user.houseId,
-      productId: selectedProductId,
-      payload: {
+    try {
+      const response = await updateProduct(user.houseId, selectedProductId, {
         stock: formValues.stock,
         price: formValues.price
-      }
-    });
-
-    try {
-      const response = await fetch(`http://localhost:4000/product/${user.houseId}/${selectedProductId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          stock: formValues.stock,
-          price: formValues.price
-        }),
       });
 
-      const responseData = await response.json();
-      console.log('Server response:', responseData);
+      console.log('Producto actualizado:', response);
 
-      if (!response.ok) {
-        console.error('Error response:', responseData);
-        throw new Error(`Error ${response.status}: ${JSON.stringify(responseData)}`);
-      }
-
-      // Actualiza el estado local
       setProductData((prevData) =>
         prevData.map((product) =>
-          product.id === selectedProductId 
-            ? { ...product, price: formValues.price, stock: formValues.stock } 
+          product.id === selectedProductId
+            ? { ...product, price: formValues.price, stock: formValues.stock }
             : product
         )
       );
 
       handleCloseModal();
     } catch (error) {
-      console.error('Error detallado:', error);
+      console.error('Error al actualizar el producto:', error);
     }
   };
 
-  // Modificar el useEffect para el botón único
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -111,12 +81,14 @@ export const ProductTablePage: React.FC = () => {
             actions: (
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <button
-                  onClick={() => handleOpenModal({
-                    id: Number(item.product.id),
-                    name: item.product.name,
-                    price: item.price,
-                    stock: item.stock
-                  })}
+                  onClick={() =>
+                    handleOpenModal({
+                      id: Number(item.product.id),
+                      name: item.product.name,
+                      price: item.price,
+                      stock: item.stock,
+                    })
+                  }
                   style={{
                     padding: '5px 10px',
                     backgroundColor: '#4CAF50',
@@ -133,7 +105,7 @@ export const ProductTablePage: React.FC = () => {
           }));
           setProductData(formattedData);
         } catch (error) {
-          console.error('Error fetching product data', error);
+          console.error('Error al obtener productos', error);
         }
       }
     };
@@ -166,7 +138,7 @@ export const ProductTablePage: React.FC = () => {
             type="number"
             fullWidth
             value={formValues.price}
-            onChange={(e) => setFormValues({...formValues, price: Number(e.target.value)})}
+            onChange={(e) => setFormValues({ ...formValues, price: Number(e.target.value) })}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -174,15 +146,10 @@ export const ProductTablePage: React.FC = () => {
             type="number"
             fullWidth
             value={formValues.stock}
-            onChange={(e) => setFormValues({...formValues, stock: Number(e.target.value)})}
+            onChange={(e) => setFormValues({ ...formValues, stock: Number(e.target.value) })}
             sx={{ mb: 2 }}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleUpdate}
-            sx={{ mr: 2 }}
-          >
+          <Button variant="contained" color="primary" onClick={handleUpdate} sx={{ mr: 2 }}>
             Guardar
           </Button>
           <Button variant="contained" color="secondary" onClick={handleCloseModal}>
