@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
-import { AuthenticationError, InvalidFieldError, NotFoundError, RequiredFieldError, AuthorizationError, OutOfRangeError, ValidationError } from '../errors';
+import { AuthenticationError, InvalidFieldError, NotFoundError, RequiredFieldError, AuthorizationError, OutOfRangeError, ValidationError, BussinessError } from '../errors';
 
 export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction): void => {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -58,6 +58,11 @@ export const errorHandler = (err: Error, req: Request, res: Response, _next: Nex
     res.status(400).send({ message: err.message });
     return;
   }
+  if (err instanceof BussinessError) {
+    res.status(400).send({ message: err.message });
+    return;
+  }
+
 
   console.error(err);
 

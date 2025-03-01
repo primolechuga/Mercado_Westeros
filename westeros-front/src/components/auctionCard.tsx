@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardMedia, CardContent, Typography, TextField, Button, Box, Chip } from "@mui/material";
+import { 
+  Card, CardMedia, CardContent, Typography, TextField, Button, Box, Chip 
+} from "@mui/material";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
@@ -10,10 +12,9 @@ interface AuctionCardProps {
   basePrice: number;
   price: number;
   house: string;
-  onBid: (bidValue: number) => void;
-  // Suponemos que item.endDate y item.timeLeftAuction vienen en el objeto AuctionItemType
-  // Para este ejemplo, usaremos una propiedad "endDate" en formato string ISO
+  auctionId: number; // para identificar la subasta
   endDate: string;
+  onBid: (bidValue: number) => Promise<void>; // debe retornar una Promise
 }
 
 const AuctionCard: React.FC<AuctionCardProps> = ({
@@ -23,14 +24,15 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
   basePrice,
   price,
   house,
-  onBid,
+  auctionId,
   endDate,
+  onBid,
 }) => {
   const [bidValue, setBidValue] = useState("");
   const [isClicked, setIsClicked] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Función para formatear el tiempo restante en "Xh Ym Zs"
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -38,7 +40,6 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     return `${hours}h ${minutes}m ${secs}s`;
   };
 
-  // Calcula el tiempo restante basándose en endDate ajustado a la hora local
   useEffect(() => {
     let endDateObj = new Date(endDate);
     // Ajustamos la fecha a la hora local usando los valores UTC:
@@ -55,7 +56,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
       setTimeLeft(secondsLeft);
     };
 
-    updateTimeLeft(); // Inicializa el tiempo restante
+    updateTimeLeft();
     const timer = setInterval(updateTimeLeft, 1000);
     return () => clearInterval(timer);
   }, [endDate]);
@@ -64,13 +65,22 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     setBidValue(event.target.value);
   };
 
-  const handleBidSubmit = () => {
+  const handleBidSubmit = async () => {
     const bidAmount = parseFloat(bidValue);
-    if (!isNaN(bidAmount) && bidAmount > price) {
-      onBid(bidAmount);
-      setBidValue("");
-    } else {
+    if (isNaN(bidAmount) || bidAmount <= price) {
       alert("Ingrese una puja válida mayor a la última puja.");
+      return;
+    }
+  
+    try {
+      setIsLoading(true);
+      // Se delega la acción de puja al componente padre
+      await onBid(bidAmount);
+      setBidValue("");
+    } catch (error: any) {
+      alert(error.message || "Error al realizar la puja");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,13 +98,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
         opacity: isClicked ? 0.7 : 1
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: "center"
-        }}
-      >
+      <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center" }}>
         <CardMedia
           component="img"
           image={imageUrl}
@@ -106,7 +110,6 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
             objectFit: "cover"
           }}
         />
-
         <CardContent sx={{ flexGrow: 1, textAlign: { xs: "center", sm: "left" } }}>
           <Typography variant="h5" gutterBottom>
             {prod_name}
@@ -123,7 +126,6 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
           <Typography variant="body1" sx={{ mb: 2 }}>
             <strong>Última Puja:</strong> ${price}
           </Typography>
-          {/* Chip con el timer */}
           <Box sx={{ mt: 1, mb: 2 }}>
             <Chip
               icon={<AccessTimeIcon />}
@@ -139,10 +141,11 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
             fullWidth
             value={bidValue}
             onChange={handleBidChange}
+            disabled={timeLeft === 0 || isLoading}
           />
           <Box mt={2}>
-            <Button variant="contained" color="primary" fullWidth onClick={handleBidSubmit}>
-              Pujar
+            <Button variant="contained" color="primary" fullWidth onClick={handleBidSubmit} disabled={timeLeft === 0 || isLoading}>
+              {isLoading ? "Enviando..." : "Pujar"}
             </Button>
           </Box>
         </CardContent>

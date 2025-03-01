@@ -8,6 +8,7 @@ export interface Auction {
 export interface AuctionFromBackend {
   id: number;
   basePrice: number;
+  price: number;
   endDate: string;
   probability: number;
   isActive: boolean;

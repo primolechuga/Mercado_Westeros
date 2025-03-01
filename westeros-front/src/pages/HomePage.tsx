@@ -17,7 +17,7 @@ export const transformAuction = (auction: AuctionFromBackend): AuctionItemType =
     image: auction.product.imagePath,
     title: auction.product.name,
     description: auction.product.description,
-    lastBid: auction.basePrice,
+    lastBid: auction.price,
     timeLeftAuction,
     endDate: endDateObj, // Puedes mantenerlo como Date o string según tus necesidades
     status: auction.isActive ? "active" : "finished"

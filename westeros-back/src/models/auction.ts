@@ -76,7 +76,7 @@ export const modifyPrice = async (auctionId: number, newPrice: number) => {
       id: auctionId
     },
     data: {
-      basePrice: newPrice
+      price: newPrice
     }
   });
   return auction;

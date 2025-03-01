@@ -14,20 +14,21 @@ export const createBid = async ( amount : number, auctionId: number, userId: str
     throw new RequiredFieldError('Subasta o casa no encontrada');
   }
 
-  if (auction.endDate < new Date() || !auction.isActive) { //TODO esto podria fallar dependiendo el formato de la fecha
+  //TODO VERIFICAR LA FECHA
+  if (!auction.isActive) { 
     throw new ValidationError('La subasta ha finalizado');
   }
 
-  if (amount < auction.basePrice) {
+  if (amount <= auction.price) {
     throw new BussinessError('La oferta debe ser mayor al precio base');
   }
 
   if (amount > house.cap) {
-    throw new BussinessError('No puedes ofertar más de lo que tienes');
+    throw new BussinessError(`No puedes ofertar más del tope de la casa: ${house.cap}`);
   }
 
   if (auction.houseId === houseId) {
-    throw new BussinessError('No puedes ofertar en tu propia subasta');
+    throw new BussinessError('No puedes ofertar en una subasta de tu propia casa');
   }
   //Actualizamos el historial de ofertas
   const previousWinner = await prisma.bidHistory.updateMany({
