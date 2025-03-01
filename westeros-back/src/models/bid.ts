@@ -1,6 +1,6 @@
 import { prisma } from '../libs/prisma';
 import { getAuction, updateWinner, recalculateProbability, modifyPrice } from './auction';
-
+import { ValidationError, RequiredFieldError, BussinessError } from '../errors';
 
 
 export const createBid = async ( amount : number, auctionId: number, userId: string, houseId: number) => {
@@ -11,24 +11,23 @@ export const createBid = async ( amount : number, auctionId: number, userId: str
   ]);
 
   if (!auction || !house) {
-    throw new Error('Subasta o casa no encontrada');
+    throw new RequiredFieldError('Subasta o casa no encontrada');
   }
 
-  if (auction.endDate < new Date() || !auction.isActive) {
-    throw new Error('La subasta ha finalizado');
+  if (auction.endDate < new Date() || !auction.isActive) { //TODO esto podria fallar dependiendo el formato de la fecha
+    throw new ValidationError('La subasta ha finalizado');
   }
 
-  if (amount < auction.basePrice &&  amount < house.cap) {
-    throw new Error('La oferta debe ser mayor al precio base');
+  if (amount < auction.basePrice) {
+    throw new BussinessError('La oferta debe ser mayor al precio base');
   }
 
   if (amount > house.cap) {
-    throw new Error('No puedes ofertar más de lo que tienes');
+    throw new BussinessError('No puedes ofertar más de lo que tienes');
   }
 
-
   if (auction.houseId === houseId) {
-    throw new Error('No puedes ofertar en tu propia subasta');
+    throw new BussinessError('No puedes ofertar en tu propia subasta');
   }
   //Actualizamos el historial de ofertas
   const previousWinner = await prisma.bidHistory.updateMany({

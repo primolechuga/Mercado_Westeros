@@ -10,62 +10,39 @@ import { AuctionList } from '../components/itemList';
 // import LinkTab from '../components/appBar/tabBar';
 // import NavBar from '../components/buttonNav';
 import { useNavigate } from 'react-router-dom';
-
+// id: number;
+// basePrice: number;
+// endDate: string;
+// probability: number;
+// isActive: boolean;
+// winnerId: string | null;
+// product: {
+//   name: string;
+//   imagePath: string;
+//   id: number;
+//   description: string;
+// };
+// }
 export const WonAuctionsPage: React.FC = () => {
   const navigate = useNavigate();
   const mockItems = [
     {
-      id: '1',
-      image: imagen,
-      title: 'Cámara Nikon D3500',
-      description: 'Cámara DSLR perfecta para principiantes.',
-      lastBid: 450.99,
-      timeLeftAuction: 20,
-      status: 'finished',
-      endDate : new Date(),
-    },
-    {
-      id: '2',
-      image: imagen,
-      title: 'iPhone 13 Pro Max',
-      description: '128GB, excelente estado.',
-      lastBid: 999.99,
-      timeLeftAuction: 7200,
-      status: 'active',
-      endDate : new Date(),
-    },
-  {
-    id: '3',
-    image: imagen,
-    title: 'La mera Ratota',
-    description: '128GB, excelente estado.',
-    lastBid: 999.99,
-    timeLeftAuction: 7200,
-    status: 'active',
-    endDate : new Date(),
-  },
-  {
-    id: '4',
-    image: imagen,
-    title: 'El JuanBoloncho',
-    description: '128GB, excelente estado.',
-    lastBid: 999.99,
-    timeLeftAuction: 7200,
-    status: 'active',
-    endDate : new Date(),
+      id: 1,
+      basePrice: 450.99,
+      endDate: '2022-12-31T23:59:59',
+      probability: 0.5,
+      isActive: false,
+      winnerId: '1',
+      product: {
+        name: 'Cámara Nikon D3500',
+        imagePath: imagen,
+        id: 1,
+        description: 'Cámara DSLR perfecta para principiantes.',
+      },
 
-  },
-  {
-    id: '5',
-    image: imagen,
-    title: 'El JuanBoloncho',
-    description: '128GB, excelente estado.',
-    lastBid: 999.99,
-    timeLeftAuction: 7200,
-    status: 'active',
-    endDate : new Date(),
-  },
-  ];
+    },
+  ]
+
 
   return (
     <Box sx={{ paddingTop: '10px' }}>

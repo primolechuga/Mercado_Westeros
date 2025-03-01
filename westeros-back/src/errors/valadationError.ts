@@ -37,3 +37,11 @@ export class ValidationError extends Error {
     Error.captureStackTrace(this, ValidationError);
   }
 }
+
+export class BussinessError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'BussinessError';
+    Error.captureStackTrace(this, BussinessError);
+  }
+}
