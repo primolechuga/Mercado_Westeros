@@ -101,6 +101,7 @@ const AuctionPage: React.FC = () => {
           endDate={auction.endDate}
           auctionId={auction.id}
           onBid={handleBid}
+          isOwnAuction={user ? user.houseId === auction.houseId : false}
         />
       </Box>
       <section>

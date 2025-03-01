@@ -12,9 +12,10 @@ interface AuctionCardProps {
   basePrice: number;
   price: number;
   house: string;
-  auctionId: number; // para identificar la subasta
+  auctionId: number;
   endDate: string;
-  onBid: (bidValue: number) => Promise<void>; // debe retornar una Promise
+  onBid: (bidValue: number) => Promise<void>;
+  isOwnAuction: boolean; // Nueva prop para saber si es de la propia casa
 }
 
 const AuctionCard: React.FC<AuctionCardProps> = ({
@@ -27,6 +28,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
   auctionId,
   endDate,
   onBid,
+  isOwnAuction,
 }) => {
   const [bidValue, setBidValue] = useState("");
   const [isClicked, setIsClicked] = useState(false);
@@ -71,11 +73,11 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
       alert("Ingrese una puja válida mayor a la última puja.");
       return;
     }
-  
+
     try {
       setIsLoading(true);
-      // Se delega la acción de puja al componente padre
       await onBid(bidAmount);
+      alert("Puja realizada con éxito");
       setBidValue("");
     } catch (error: any) {
       alert(error.message || "Error al realizar la puja");
@@ -95,7 +97,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
         borderRadius: 2,
         boxShadow: 3,
         cursor: "pointer",
-        opacity: isClicked ? 0.7 : 1
+        opacity: isClicked ? 0.7 : 1,
       }}
     >
       <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, alignItems: "center" }}>
@@ -107,15 +109,21 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
             width: { xs: "100%", sm: 400 },
             height: { xs: 300, sm: 400 },
             borderRadius: 2,
-            objectFit: "cover"
+            objectFit: "cover",
           }}
         />
+
         <CardContent sx={{ flexGrow: 1, textAlign: { xs: "center", sm: "left" } }}>
           <Typography variant="h5" gutterBottom>
             {prod_name}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-            {house}
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            // Si es de la propia casa, muestra el nombre en rojo y agrega "(Tu Casa)"
+            color={isOwnAuction ? "error" : "text.secondary"}
+          >
+            {house} {isOwnAuction && "(Tu Casa)"}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             {description}
