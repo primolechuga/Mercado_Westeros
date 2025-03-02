@@ -1,52 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconButton, Box, Paper, Typography, Button, TextField } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 
+interface Message {
+  text: string;
+  isBot: boolean;
+}
+
 const FloatingChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const websocket = useRef<WebSocket | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null); // Referencia para el scroll
+
+  useEffect(() => {
+    if (isOpen) {
+      websocket.current = new WebSocket('ws://localhost:8000/ws/chat');
+
+      websocket.current.onmessage = (event) => {
+        setMessages(prev => [...prev, { text: event.data, isBot: true }]);
+      };
+
+      websocket.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+
+      return () => {
+        websocket.current?.close();
+      };
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    // Auto-scroll al último mensaje cuando la lista de mensajes cambia
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
   const sendMessage = () => {
-    if (message.trim()) {
-      setMessages((prevMessages) => [...prevMessages, message]);
+    if (message.trim() && websocket.current) {
+      websocket.current.send(message);
+      setMessages(prev => [...prev, { text: message, isBot: false }]);
       setMessage('');
     }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
     }
-};
+  };
 
   return (
     <>
-      {/* Botón flotante */}
       <IconButton
-        color="primary"
+        color="secondary"
         onClick={toggleChat}
         sx={{
           position: 'fixed',
           bottom: 16,
           right: 16,
-          width: 64, // Ajusta el tamaño del botón
+          width: 64,
           height: 64,
-          backgroundColor: 'primary.main',
+          backgroundColor: 'secondary.main',
           color: '#fff',
-          '&:hover': { backgroundColor: 'primary.dark' },
+          '&:hover': { backgroundColor: 'secondary.dark' },
         }}
       >
-        <ChatIcon 
-          sx={{ fontSize: 32 }}
-        />
+        <ChatIcon sx={{ fontSize: 32 }} />
       </IconButton>
 
-      {/* Ventana de chat */}
       {isOpen && (
         <Paper
           elevation={3}
@@ -54,23 +81,23 @@ const FloatingChat = () => {
             position: 'fixed',
             bottom: 80,
             right: 16,
-            width: 300,
-            height: 400,
+            width: 360, // Aumenté el tamaño de la ventana
+            height: 500,
             display: 'flex',
             flexDirection: 'column',
             boxShadow: 4,
             borderRadius: 2,
-            zIndex: 1
+            zIndex: 1,
           }}
         >
-          {/* Título */}
           <Box
             sx={{
-              backgroundColor: 'primary.main',
+              backgroundColor: 'secondary.main',
               color: '#fff',
               padding: '8px',
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
+              position: 'relative',
             }}
           >
             <Typography variant="h6">Ayuda de Maestre</Typography>
@@ -79,56 +106,61 @@ const FloatingChat = () => {
               sx={{ position: 'absolute', top: 8, right: 8, color: '#fff' }}
               onClick={toggleChat}
             >
-                <CloseIcon />
+              <CloseIcon />
             </IconButton>
-        
           </Box>
 
-          {/* Mensajes */}
           <Box
             sx={{
               flex: 1,
               overflowY: 'auto',
               padding: 2,
-              wordWrap: 'break-word', 
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
             }}
           >
             {messages.map((msg, index) => (
-              <Typography
+              <Box
                 key={index}
                 sx={{
-                  marginBottom: 1,
-                  padding: 1,
-                  backgroundColor: 'grey.100',
-                  borderRadius: 1,
+                  alignSelf: msg.isBot ? 'flex-end' : 'flex-start', // Mensajes del usuario a la izquierda
                   maxWidth: '80%',
-                  alignSelf: index % 2 === 0 ? 'flex-start' : 'flex-end',
+                  padding: 1,
+                  borderRadius: 2,
+                  backgroundColor: msg.isBot ? 'grey.300' : 'secondary.light',
+                  color: msg.isBot ? '#000' : '#fff',
                   wordBreak: 'break-word',
                 }}
               >
-                {msg}
-              </Typography>
+                <Typography variant="body2">{msg.text}</Typography>
+              </Box>
             ))}
+            <div ref={messagesEndRef} /> {/* Elemento invisible para hacer scroll */}
           </Box>
 
-          {/* Entrada de mensaje */}
           <Box
             sx={{
               display: 'flex',
               padding: 1,
               borderTop: '1px solid #ccc',
+              gap: 1,
             }}
           >
             <TextField
+              fullWidth
               variant="outlined"
               size="small"
               placeholder="Escribe un mensaje..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyUp={handleKeyPress}
-              sx={{ flex: 1, marginRight: 1 }}
+              onKeyPress={handleKeyPress}
             />
-            <Button variant="contained" onClick={sendMessage}>
+            <Button
+              variant="contained"
+              onClick={sendMessage}
+              disabled={!message.trim()}
+            >
               Enviar
             </Button>
           </Box>
@@ -137,6 +169,5 @@ const FloatingChat = () => {
     </>
   );
 };
-
 
 export default FloatingChat;
