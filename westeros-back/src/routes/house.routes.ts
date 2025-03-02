@@ -11,6 +11,6 @@ houseRouter.get('/:id', getHouse);
 houseRouter.get('/myHouse', getMyHouse);
 
 //Maestre
-houseRouter.put('/:id', modifyCap);
+houseRouter.put('/:houseId', modifyCap);
 
 export { houseRouter };
