@@ -14,6 +14,7 @@ import { Theme } from "@mui/system";
 import GavelIcon from "@mui/icons-material/Gavel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
+import { useNavigate } from "react-router-dom";
 
 export interface ActiveBidType {
   id: string;
@@ -36,6 +37,7 @@ export interface ActiveBidProps {
 export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
   const [timeLeft, setTimeLeft] = useState(item.timeLeftAuction);
   const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (item.status !== "active") return;
@@ -145,7 +147,8 @@ export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
                 variant="filled"
               />
             ))}
-          {!isWinning && item.status === "active" && (
+          {/* Solo se muestra el botón si la subasta está activa */}
+          {item.status === "active" && !isWinning && (
             <Box sx={{ marginTop: isSmallScreen ? 2 : 0 }}>
               <Button
                 variant="contained"
@@ -158,6 +161,7 @@ export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
                   minWidth: "auto",
                   height: "32px",
                 }}
+                onClick={() => navigate(`/auctionPage/${item.auctionId}`)}
               >
                 Haz una nueva oferta
               </Button>
@@ -168,3 +172,5 @@ export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
     </Card>
   );
 };
+
+export default ActiveBidItem;
