@@ -15,45 +15,33 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
 
-export interface ActiveBidProps {
-  item: {
-    id: string;
-    image: string;
-    title: string;
-    description: string;
-    currentBid: number;
-    myBid: number;
-    endDate: Date;
-    timeLeftAuction: number;
-    status: string;
-  };
-}
-
 export interface ActiveBidType {
   id: string;
   image: string;
   title: string;
   description: string;
-  currentBid: number;
+  price: number;
   myBid: number;
   endDate: Date;
   timeLeftAuction: number;
   status: string;
+  isWinner: boolean;
+  auctionId: number;
+}
+
+export interface ActiveBidProps {
+  item: ActiveBidType;
 }
 
 export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
   const [timeLeft, setTimeLeft] = useState(item.timeLeftAuction);
-  const isSmallScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down("sm")
-  );
+  const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
 
   useEffect(() => {
     if (item.status !== "active") return;
-
     const timer = setInterval(() => {
       setTimeLeft((prev) => Math.max(prev - 1, 0));
     }, 1000);
-
     return () => clearInterval(timer);
   }, [item.status]);
 
@@ -64,7 +52,16 @@ export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
     return `${hours}h ${minutes}m ${secs}s`;
   };
 
-  const isWinning = item.myBid === item.currentBid;
+  const isWinning = item.isWinner;
+
+  const finishedDate =
+    item.status !== "active"
+      ? new Date(item.endDate).toLocaleDateString("es-CO", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : null;
 
   return (
     <Card
@@ -86,6 +83,9 @@ export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
         alt={item.title}
       />
       <CardContent sx={{ flex: 1, padding: 2 }}>
+        <Typography variant="caption" color="text.secondary" gutterBottom>
+          Subasta #{item.auctionId}
+        </Typography>
         <Typography variant="h6" gutterBottom>
           {item.title}
         </Typography>
@@ -100,49 +100,66 @@ export const ActiveBidItem: React.FC<ActiveBidProps> = ({ item }) => {
         >
           <Chip
             icon={<GavelIcon />}
-            label={`Puja actual: $${item.currentBid.toFixed(2)}`}
+            label={
+              item.status === "active"
+                ? `Puja actual: $${(item.price ?? 0).toFixed(2)}`
+                : `Precio final: $${(item.price ?? 0).toFixed(2)}`
+            }
             color="primary"
             variant="outlined"
           />
           <Chip
             icon={<GavelIcon />}
-            label={`Mi puja: $${item.myBid.toFixed(2)}`}
+            label={`Mi puja: $${(item.myBid ?? 0).toFixed(2)}`}
             color={isWinning ? "success" : "error"}
             variant="outlined"
           />
-          <Chip
-            icon={<AccessTimeIcon />}
-            label={`Tiempo restante: ${formatTime(timeLeft)}`}
-            color={timeLeft > 0 ? "success" : "error"}
-            variant="outlined"
-          />
-          {isWinning && (
+          {item.status === "active" ? (
             <Chip
-              icon={<StarIcon />}
-              label="¡Vas ganando!"
-              color="success"
-              variant="filled"
-
+              icon={<AccessTimeIcon />}
+              label={`Tiempo restante: ${formatTime(timeLeft)}`}
+              color={timeLeft > 0 ? "success" : "error"}
+              variant="outlined"
+            />
+          ) : (
+            <Chip
+              icon={<AccessTimeIcon />}
+              label={`Finalizó: ${finishedDate}`}
+              color="default"
+              variant="outlined"
             />
           )}
-          {!isWinning && (
-            <Box sx={{ 
-              marginTop: 2
-               }}>
+          {isWinning &&
+            (item.status === "active" ? (
+              <Chip
+                icon={<StarIcon />}
+                label="¡Vas ganando!"
+                color="success"
+                variant="filled"
+              />
+            ) : (
+              <Chip
+                icon={<StarIcon />}
+                label="Ganado"
+                color="success"
+                variant="filled"
+              />
+            ))}
+          {!isWinning && item.status === "active" && (
+            <Box sx={{ marginTop: isSmallScreen ? 2 : 0 }}>
               <Button
-              variant="contained"
-              color="secondary"
-
-              fullWidth
-              sx={{ 
-                borderRadius: 5,
-                padding: '4px 11px', // Padding más pequeño
-                fontSize: '0.875rem',
-                minWidth: 'auto',
-                height: '32px',
-               }}
+                variant="contained"
+                color="secondary"
+                fullWidth
+                sx={{
+                  borderRadius: 5,
+                  padding: "4px 11px",
+                  fontSize: "0.875rem",
+                  minWidth: "auto",
+                  height: "32px",
+                }}
               >
-              Haz una nueva oferta
+                Haz una nueva oferta
               </Button>
             </Box>
           )}

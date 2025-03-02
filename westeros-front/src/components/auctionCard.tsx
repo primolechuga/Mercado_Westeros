@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { 
   Card, CardMedia, CardContent, Typography, TextField, Button, Box, Chip 
 } from "@mui/material";
-import GavelIcon from "@mui/icons-material/Gavel";
+// import GavelIcon from "@mui/icons-material/Gavel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 interface AuctionCardProps {

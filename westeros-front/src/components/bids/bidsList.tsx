@@ -18,7 +18,7 @@ export const BidsList: React.FC<{ items: ActiveBidType[] }> = ({ items }) => {
   });
 
   const filteredItems = filter === 'winning' 
-    ? sortedItems.filter(item => item.myBid === item.currentBid) 
+    ? sortedItems.filter(item => item.myBid === item.price) 
     : sortedItems;
 
   const paginatedItems = filteredItems.slice((page - 1) * itemsPerPage, page * itemsPerPage);
@@ -36,7 +36,7 @@ export const BidsList: React.FC<{ items: ActiveBidType[] }> = ({ items }) => {
       label="Ordenar por" // Asegúrate de incluir el label aquí
     >
       <MenuItem value="title">Título</MenuItem>
-      <MenuItem value="currentBid">Puja Actual</MenuItem>
+      <MenuItem value="price">Puja Actual</MenuItem>
       <MenuItem value="timeLeftAuction">Tiempo Restante</MenuItem>
     </Select>
   </FormControl>

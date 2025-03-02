@@ -5,7 +5,7 @@ import { getAuction, getActiveAuctions } from "../services/Api/auctionService";
 import { createBid } from "../services/Api/bid"; // Función para crear la puja
 import { useParams } from "react-router-dom";
 import { AuctionItemType } from '../components/item';
-import HorizontalScroll from '../components/HomeItemList/HomeItemList';
+// import HorizontalScroll from '../components/HomeItemList/HomeItemList';
 import FloatingChat from '../components/floatchat';
 import { transformAuction, AuctionSection } from './HomePage';
 import { useAuth } from "../contexts/authContext";

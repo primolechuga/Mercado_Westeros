@@ -3,8 +3,7 @@ import { Request, Response } from 'express';
 
 export const getMyBids = async (req: Request, res: Response) => {
   const userId = req.user.id;
-
-  const bids = prisma.bidHistory.findMany({
+  const bids = await prisma.bidHistory.findMany({
     where: {
       userId
     },
@@ -16,6 +15,7 @@ export const getMyBids = async (req: Request, res: Response) => {
           endDate: true,
           isActive: true,
           houseId: true,
+          price: true,
           product: {
             select: {
               name: true,
@@ -26,6 +26,9 @@ export const getMyBids = async (req: Request, res: Response) => {
           }
         }
       }
+    },
+    orderBy: {
+      date: 'desc'
     }
   });
 
