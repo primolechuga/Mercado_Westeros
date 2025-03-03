@@ -8,6 +8,7 @@ export const createProduct = async (req: Request, res: Response, next : NextFunc
   const { name, description, houseId, stock, basePrice } = req.body;
   const imageUrl = `${baseUrl}/uploads/products/${req.file?.filename}`;
   console.log(imageUrl); 
+  console.log(req.body);
   if (isNaN(houseId) || isNaN(stock) || isNaN(basePrice)) {
     res.status(400).json({ error: 'Datos inválidos.' });
   }
@@ -28,6 +29,8 @@ export const createProduct = async (req: Request, res: Response, next : NextFunc
         houseId: Number(req.body.houseId),
       }
     });
+    console.log(newProduct);
+    console.log(newInventory);
 
     res.status(201).json({ product: newProduct, inventory: newInventory });
     

@@ -17,6 +17,7 @@ import { Request, Response, NextFunction } from 'express';
 
 export const deleteMerchants = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   const { merchantId } = req.params;
+  console.log(merchantId);
     
   const merchant = await prisma.user.delete({
     where: {

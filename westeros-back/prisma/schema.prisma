@@ -82,8 +82,8 @@ model Auction {
   product      Product      @relation(fields: [productId], references: [id])
   house        House        @relation(fields: [houseId], references: [id])
   bidHistory   BidHistory[]
-  winner       User?        @relation("AuctionWinner", fields: [winnerId], references: [id])
-  owner        User         @relation("AuctionOwner", fields: [ownerId], references: [id])
+  winner       User?        @relation("AuctionWinner", fields: [winnerId], references: [id], onDelete: SetNull)
+  owner        User         @relation("AuctionOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 }
 
 model BidHistory {
