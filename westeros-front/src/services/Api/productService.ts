@@ -30,6 +30,7 @@ export const createProduct = async (type: string, product: Product) => {
 // Obtener productos por houseId
 export const getProductsByHouse = async (houseId: number, page: number, pageSize: number) => {
   try {
+    console.log(houseId);
     const response = await api.get(`product/${houseId}?page=${page}&pageSize=${pageSize}`);
     return response.data;
   } catch (error) {

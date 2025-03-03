@@ -1,4 +1,5 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -19,35 +20,31 @@ interface FormData {
   name: string;
   password: string;
   house: string;
-  address1: string;
-  address2?: string;
 }
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: '',
     name: '',
     password: '',
     house: '',
-    address1: '',
   });
 
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
-  
+
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
-    const { value } = e.target;
-    console.log("Selected house:", value); // Verifica el valor seleccionado
     setFormData((prev) => ({
       ...prev,
-      house: value,
+      house: e.target.value,
     }));
   };
-  
+
   const houseMapping: Record<string, number> = {
     Stark: 1,
     Lannister: 2,
@@ -62,19 +59,16 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-  
-    // Convertir el nombre de la casa en su respectivo houseId
-    const houseId = houseMapping[formData.house] || 1; // Valor por defecto si no se encuentra
-  
+
+    const houseId = houseMapping[formData.house] || 1;
+
     const payload = {
       email: formData.email,
       name: formData.name,
       password: formData.password,
-      houseId, // Se envía el ID en lugar del nombre
-      address1: formData.address1,
-      address2: formData.address2,
+      houseId,
     };
-  
+
     const response = await fetch('http://localhost:4000/user/register', {
       method: 'POST',
       headers: {
@@ -82,9 +76,10 @@ const Register: React.FC = () => {
       },
       body: JSON.stringify(payload),
     });
-  
+
     if (response.ok) {
       alert('Usuario creado exitosamente');
+      navigate('/login'); // Redirige al login después del registro
     } else {
       alert('Error al crear el usuario');
     }
@@ -98,12 +93,11 @@ const Register: React.FC = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '75vh',
-        backgroundColor: '#fafafa',
       }}
     >
       <Paper
         sx={{
-          padding: 1,
+          padding: 3,
           width: '100%',
           maxWidth: 400,
           display: 'flex',
@@ -149,54 +143,24 @@ const Register: React.FC = () => {
             onChange={handleTextChange}
           />
 
-          {/* Campo de selección para "Reino" */}
           <FormControl fullWidth margin="normal" variant="outlined">
             <InputLabel id="house-label">Casa</InputLabel>
             <Select
               labelId="house-label"
-              name="houseId"
+              name="house"
               value={formData.house}
               onChange={handleSelectChange}
               label="Casa"
             >
-              <MenuItem value="Stark">Stark</MenuItem>
-              <MenuItem value="Lannister">Lannister</MenuItem>
-              <MenuItem value="Targaryen">Targaryen</MenuItem>
-              <MenuItem value="Greyjoy">Greyjoy</MenuItem>
-              <MenuItem value="Tyrell">Tyrell</MenuItem>
-              <MenuItem value="Martell">Martell</MenuItem>
-              <MenuItem value="Tully">Tully</MenuItem>
-              <MenuItem value="Arryn">Arryn</MenuItem>
-              
+              {Object.keys(houseMapping).map((house) => (
+                <MenuItem key={house} value={house}>
+                  {house}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
-          <TextField
-            label="Dirección 1"
-            name="address1"
-            type="text"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={formData.address1}
-            onChange={handleTextChange}
-          />
-          <TextField
-            label="Dirección 2"
-            name="address2"
-            type="text"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={formData.address2}
-            onChange={handleTextChange}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-          >
+
+          <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
             Crear Cuenta
           </Button>
         </Box>
@@ -215,4 +179,3 @@ const Register: React.FC = () => {
 };
 
 export default Register;
-
