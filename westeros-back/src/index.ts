@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import { router } from './routes';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yaml';
+import { scheduleAllAuctionJobs } from './utils/auctionSchedules';
 
 const file  = fs.readFileSync('./swagger.yaml', 'utf8');
 const swaggerDocument = YAML.parse(file);
@@ -41,6 +42,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+
 app.use( router );
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));	
 app.use('/uploads', express.static('uploads'));
@@ -50,6 +53,7 @@ const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  scheduleAllAuctionJobs();
 });
 
 

@@ -13,6 +13,7 @@ services:
       - NODE_ENV=development
       - PORT=4000
       - DATABASE_URL=postgresql://admin:admin@postgres:5432/WesterosDB
+      - TZ=America/Bogota
     depends_on:
       - postgres
     volumes:

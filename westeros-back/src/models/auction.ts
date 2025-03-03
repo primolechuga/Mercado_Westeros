@@ -1,11 +1,10 @@
 
 import { prisma } from '../libs/prisma';
 import { getProduct } from './product';
-
-
+import { scheduleAuctionCloseJob } from '../utils/auctionSchedules';
+import { toZonedTime } from 'date-fns-tz';
 export const createAuction = async (houseId: number, productId: number, basePrice: number, endDate: Date, quantity :number, userId: string ) => {
   const product = await getProduct(houseId, productId);
-  console.log(product);
   const productStore = await prisma.productStore.findFirst({
     where: {
       houseId,
@@ -18,10 +17,11 @@ export const createAuction = async (houseId: number, productId: number, basePric
   if (product.stock - quantity < 0) {
     throw new Error('Product out of stock');
   }
+  console.log(toZonedTime(new Date(endDate), 'CO'));
   const auction = await prisma.auction.create({
     data: {
       basePrice,
-      endDate : new Date(endDate).toISOString(),
+      endDate : new Date(endDate),
       productId,
       houseId,
       quantity,
@@ -47,7 +47,9 @@ export const createAuction = async (houseId: number, productId: number, basePric
       stock: { decrement: quantity }
     }
   });
-  
+
+  scheduleAuctionCloseJob(auction);
+
   return auction;
 };
 
@@ -64,6 +66,15 @@ export const getActiveAuctions = async (houseId: number) => {
   const auctions = await prisma.auction.findMany({
     where: {
       houseId,
+      isActive: true
+    }
+  });
+  return auctions;
+};
+
+export const getAllActiveAuctions = async () => {
+  const auctions = await prisma.auction.findMany({
+    where: {
       isActive: true
     }
   });
@@ -134,7 +145,21 @@ export const closeAuction = async (auctionId: number) => {
     }
   });
   if (!auction.winnerId) {
-    throw new Error('Ganador no encontrado');
+    // No hay ganador, se devuelve el stock
+    await prisma.productStore.findFirst({
+      where: {
+        houseId: auction.houseId,
+        productId: auction.productId
+      }
+    });
+
+    await prisma.auction.update({
+      where: { id: auctionId },
+      data: {
+        price: 0
+      }
+    });
+    return 'Subasta cerrada sin ganador';
   }
 
   const winner = await prisma.user.findUnique({
@@ -180,18 +205,28 @@ export const closeAuction = async (auctionId: number) => {
   }
 
   //calculamos la ganacia o perdida de la casa
-  const profit = finalPrice - initialPrice;
-  //Actualizamos el balance de la casa que compra
-  await prisma.house.update({
-    where: { id: winner.houseId },
-    data: { balance: { increment: profit } }
-  }); 
-
-  await prisma.user.update({
-    where: { id: winner.id },
-    data: { balance: { increment : profit } }
-  });
+  const profit = initialPrice - finalPrice;
+  await Promise.all([
+    // Actualizamos el balance de la casa que compra
+    prisma.house.update({
+      where: { id: winner.houseId },
+      data: { balance: { increment: profit } }
+    }),
+    // Actualizamos el balance del ganador
+    prisma.user.update({
+      where: { id: winner.id },
+      data: { balance: { increment: profit } }
+    }),
+    // Actualizamos el balance del dueño de la subasta
+    prisma.user.update({
+      where: { id: auction.ownerId },
+      data: { balance: { decrement: profit } }
+    }),
+    // Actualizamos el balance de la casa que vende
+    prisma.house.update({
+      where: { id: auction.houseId },
+      data: { balance: { decrement: profit } }
+    })
+  ]);
 
 };
-
-

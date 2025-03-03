@@ -2,8 +2,7 @@ import { hashPassword } from '../utils/hashPassword';
 import { prisma } from '../libs/prisma';
 import { houses } from './houses';
 import { products } from './products';
-
-
+import { createAuction } from '../models/auction';
 
 async function main() {
   // Crear casas
@@ -98,8 +97,8 @@ async function main() {
       productStorages.push({
         houseId: house.id,
         productId: product.id,
-        price: Math.floor(Math.random() * 100000) + 1, // Precio aleatorio entre 1 y 100
-        stock: Math.floor(Math.random() * 100) + 1, // Stock aleatorio entre 1 y 100
+        price: Math.floor(Math.random() * 100000) + 10, // Precio aleatorio entre 1 y 100
+        stock: Math.floor(Math.random() * 100) + 10, // Stock aleatorio entre 1 y 100
       });
     }
   }
@@ -107,6 +106,45 @@ async function main() {
   await prisma.productStore.createMany({
     data: productStorages
   });
+
+
+  //Creamos 15 subastas aleatorias
+  const mercaderes = await prisma.user.findMany({
+    where: {
+      role: 'MERCADER'
+    }
+  });
+
+  const subastas = [];
+
+  for (let i = 0; i < 15; i++) {
+    const mercader = mercaderes[i % mercaderes.length];
+    const basePrice = Math.floor(Math.random() * 1000) + 1;
+    const endDate = new Date();
+    endDate.setFullYear(2025, 6, 1); 
+    const quantity = Math.floor(Math.random() * 10) + 1;
+    const productId = i + 1;
+    const houseId = mercader.houseId;
+    console.log(mercader.houseId);
+
+    subastas.push({
+      mercader,
+      basePrice,
+      endDate,
+      quantity,
+      productId
+    });
+
+    await createAuction( houseId, productId, basePrice, endDate, quantity, mercader.id);
+  }
+
+
+
+    
+
+
+
+
 
 }
 
