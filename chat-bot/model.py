@@ -10,21 +10,30 @@ class AsistenteProductos:
             model="MoritzLaurer/mDeBERTa-v3-base-mnli-xnli"
         )
 
-        # Base de datos simulada de productos
         self.productos = {
-            "1": {"nombre": "Televisor Samsung 55 pulgadas", "precio": 1800000, "calidad": "buena", "disponible": True},
-            "2": {"nombre": "Lavadora LG 12kg", "precio": 1200000, "calidad": "buena", "disponible": True},
-            "3": {"nombre": "Celular Xiaomi Redmi Note 10", "precio": 750000, "calidad": "regular", "disponible": True},
-            "4": {"nombre": "Licuadora Oster", "precio": 180000, "calidad": "buena", "disponible": False},
-            "5": {"nombre": "Audífonos inalámbricos", "precio": 65000, "calidad": "mala", "disponible": True},
-            "6": {"nombre": "Computador portátil HP", "precio": 2200000, "calidad": "buena", "disponible": True},
-            "7": {"nombre": "Microondas Whirlpool", "precio": 320000, "calidad": "regular", "disponible": False},
-            "8": {"nombre": "Tablet Samsung", "precio": 900000, "calidad": "buena", "disponible": True},
-            "9": {"nombre": "Cámara Canon", "precio": 1500000, "calidad": "buena", "disponible": True},
-            "10": {"nombre": "Parlante Bluetooth JBL", "precio": 230000, "calidad": "regular", "disponible": True},
-            "11": {"nombre": "Nevera Haceb No Frost", "precio": 1700000, "calidad": "buena", "disponible": True},
-            "12": {"nombre": "Ventilador de techo", "precio": 140000, "calidad": "mala", "disponible": True}
+            "1": {"nombre": "El Huevo de dragón verde", "precio": 5000000, "calidad": "excelente", "disponible": True},
+            "2": {"nombre": "EL Huevo de dragón rojo", "precio": 5000000, "calidad": "excelente", "disponible": True},
+            "3": {"nombre": "Los Tres huevos de dragón", "precio": 15000000, "calidad": "excelente", "disponible": False},
+            "4": {"nombre": "La Espada Aguja", "precio": 1200000, "calidad": "buena", "disponible": True},
+            "5": {"nombre": "La Espada Lamento de Viuda", "precio": 2500000, "calidad": "excelente", "disponible": True},
+            "6": {"nombre": "El Fuego Valyrio", "precio": 800000, "calidad": "letal", "disponible": True},
+            "7": {"nombre": "El Trono de Hierro", "precio": 100000000, "calidad": "legendaria", "disponible": False},
+            "8": {"nombre": "El Cristal de dragón", "precio": 500000, "calidad": "buena", "disponible": True},
+            "9": {"nombre": "El Pack de 3 rostros del Dios de Muchos Rostros", "precio": 3000000, "calidad": "misteriosa", "disponible": False},
+            "10": {"nombre": "La Espada Garra", "precio": 5000000, "calidad": "excelente", "disponible": True},
+            "11": {"nombre": "El Estandarte de la Casa Stark", "precio": 200000, "calidad": "buena", "disponible": True},
+            "12": {"nombre": "El Estandarte de la Casa Lannister", "precio": 200000, "calidad": "buena", "disponible": True},
+            "13": {"nombre": "La Corona de la Reina Rhaenyra Targaryen", "precio": 7000000, "calidad": "excelente", "disponible": False},
+            "14": {"nombre": "La Lágrima de Lys", "precio": 10000000, "calidad": "letal", "disponible": True},
+            "15": {"nombre": "La Daga de cristal de dragón", "precio": 2000000, "calidad": "excelente", "disponible": True},
+            "16": {"nombre": "La Daga Catspaw", "precio": 4500000, "calidad": "excelente", "disponible": False},
+            "17": {"nombre": "La Cabeza de Balerion", "precio": 50000000, "calidad": "legendaria", "disponible": False},
+            "18": {"nombre": "La Máscara de Viserys Targaryen", "precio": 1500000, "calidad": "buena", "disponible": True},
+            "19": {"nombre": "El Estandarte de Stannis Baratheon", "precio": 200000, "calidad": "buena", "disponible": True},
+            "20": {"nombre": "La Corona de Cersei Lannister", "precio": 5000000, "calidad": "excelente", "disponible": False}
         }
+
+
 
         # Expresiones colombianas por categoría
         self.expresiones = {
@@ -105,7 +114,7 @@ class AsistenteProductos:
         else:
             expresion = random.choice(self.expresiones["precios_bajos"])
 
-        return f"{expresion}. El {producto['nombre']} vale {precio_formateado} pesitos colombianos."
+        return f"{expresion}. {producto['nombre']} vale {precio_formateado} pesitos colombianos."
 
     def responder_recomendacion(self, id_producto):
         """Responde si recomienda o no un producto."""
@@ -116,12 +125,12 @@ class AsistenteProductos:
 
         if producto['calidad'] == "buena":
             expresion = random.choice(self.expresiones["buena_calidad"])
-            return f"{expresion}. Te recomiendo el {producto['nombre']} a ojos cerrados, mi llave."
+            return f"{expresion}. Te recomiendo {producto['nombre']} a ojos cerrados, mi llave."
         elif producto['calidad'] == "regular":
-            return f"Vea pues, el {producto['nombre']} no es tan malo, pero tampoco es una maravilla. Si tiene el presupuesto, dele de una."
+            return f"Vea pues, {producto['nombre']} no es tan malo, pero tampoco es una maravilla. Si tiene el presupuesto, dele de una."
         else:
             expresion = random.choice(self.expresiones["mala_calidad"])
-            return f"{expresion}. Yo no le recomendaría el {producto['nombre']}, parce."
+            return f"{expresion}. Yo no le recomendaría {producto['nombre']}, parce."
 
     def responder_disponibilidad(self, id_producto):
         """Responde sobre la disponibilidad de un producto."""
@@ -131,10 +140,10 @@ class AsistenteProductos:
         producto = self.productos[id_producto]
 
         if producto['disponible']:
-            return f"Claro que sí, mi llave. El {producto['nombre']} está disponible. ¿Lo quiere apartar?"
+            return f"Claro que sí, mi llave. {producto['nombre']} está disponible. ¿Lo quiere apartar?"
         else:
             expresion = random.choice(self.expresiones["no_disponible"])
-            return f"{expresion}. El {producto['nombre']} no está disponible por el momento."
+            return f"{expresion}. {producto['nombre']} no está disponible por el momento."
 
     def responder_calidad(self, id_producto):
         """Responde sobre la calidad de un producto."""
@@ -145,12 +154,12 @@ class AsistenteProductos:
 
         if producto['calidad'] == "buena":
             expresion = random.choice(self.expresiones["buena_calidad"])
-            return f"{expresion}. El {producto['nombre']} es de muy buena calidad, no se va a arrepentir."
+            return f"{expresion}. {producto['nombre']} es de muy buena calidad, no se va a arrepentir."
         elif producto['calidad'] == "regular":
-            return f"Pues vea, el {producto['nombre']} no es lo mejor, pero tampoco lo peor. Es como del montón, ¿si me entiende?"
+            return f"Pues vea, {producto['nombre']} no es lo mejor, pero tampoco lo peor. Es como del montón, ¿si me entiende?"
         else:
             expresion = random.choice(self.expresiones["mala_calidad"])
-            return f"{expresion}. El {producto['nombre']} no es lo que esperaría, la verdad."
+            return f"{expresion}. {producto['nombre']} no es lo que esperaría, la verdad."
 
     def responder_general(self, id_producto):
         """Da información general sobre un producto."""
@@ -168,7 +177,7 @@ class AsistenteProductos:
             "mala": "no es muy bueno que digamos"
         }
 
-        return f"Sobre el {producto['nombre']}, le cuento que cuesta {precio_formateado} pesitos, {disponibilidad} y {calidad_map[producto['calidad']]}."
+        return f"Sobre {producto['nombre']}, le cuento que cuesta {precio_formateado} pesitos, {disponibilidad} y {calidad_map[producto['calidad']]}."
 
     def procesar_consulta(self, texto):
         """Procesa la consulta del usuario y genera una respuesta."""
@@ -198,7 +207,7 @@ class AsistenteProductos:
     def interactuar(self):
         """Maneja la interacción con el usuario."""
         print(random.choice(self.expresiones["saludos"]))
-        print("Soy el vendedor de productos, ¿en qué le puedo ayudar?")
+        print("Soy el Maestre de Biblioteca, ¿en qué le puedo ayudar?")
 
         while True:
             entrada = input("\n> ")
