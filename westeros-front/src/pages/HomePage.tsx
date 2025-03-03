@@ -9,8 +9,7 @@ import{ AuctionFromBackend} from '../types/auction';
 
 // Función para transformar el objeto del backend al formato que espera AuctionItem
 export const transformAuction = (auction: AuctionFromBackend): AuctionItemType => {
-  let endDateObj = new Date(auction.endDate);  
-  endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
+  const endDateObj = new Date(auction.endDate);  
   const timeLeftAuction = Math.max(Math.floor((endDateObj.getTime() - Date.now()) / 1000), 0);
   return {
     id: auction.id.toString(),

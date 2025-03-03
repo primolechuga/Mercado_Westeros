@@ -28,14 +28,15 @@ export const AppRoutes: React.FC = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/auctionPage/:id" element={<AuctionPage />} />
+      <Route path="/house" element={<HousePage />} />
 
       
 
-      {/* Rutas protegidas */}
+      {/* Rutas protegidas
       <Route element={<ProtectedRoute allowedRoles={['mercader', 'maestre']} />}>
         <Route path="/products" element={<ProductTablePage />} />
         <Route path="/house" element={<HousePage />} />
-      </Route>
+      </Route> */}
 
       {/* Rutas protegidas solo para Maestre*/}
 
@@ -43,6 +44,7 @@ export const AppRoutes: React.FC = () => {
         {/* <Route path="/userRequests" element={<UserRequestsPage />} /> */}
         <Route path="/merchants" element={<MerchantsPage />} />
         <Route path="/addProduct" element={<AddProductPage />} />
+        <Route path="/products" element={<ProductTablePage />} />
         <Route path="/house" element={<HousePage />} />
       </Route>
 

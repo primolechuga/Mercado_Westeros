@@ -43,16 +43,8 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
   };
 
   useEffect(() => {
-    let endDateObj = new Date(endDate);
+    const endDateObj = new Date(endDate);
     // Ajustamos la fecha a la hora local usando los valores UTC:
-    endDateObj = new Date(
-      endDateObj.getUTCFullYear(),
-      endDateObj.getUTCMonth(),
-      endDateObj.getUTCDate(),
-      endDateObj.getUTCHours(),
-      endDateObj.getUTCMinutes(),
-      endDateObj.getUTCSeconds()
-    );
     const updateTimeLeft = () => {
       const secondsLeft = Math.max(Math.floor((endDateObj.getTime() - Date.now()) / 1000), 0);
       setTimeLeft(secondsLeft);

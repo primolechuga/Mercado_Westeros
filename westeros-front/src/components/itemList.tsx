@@ -35,10 +35,11 @@ export const AuctionList: React.FC<AuctionListProps> = ({ items, showInactiveFil
   const displayItems: AuctionItemType[] = items.map(auction => {
     console.log(auction.endDate);
     let endDateObj = new Date(auction.endDate);
-    endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
+    // endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
     console.log(endDateObj);
     const timeLeftAuction = Math.floor((endDateObj.getTime() - Date.now()) / 1000);
     console.log(timeLeftAuction);
+    console.log(Date.now());
     return {
       id: auction.id.toString(),
       image: auction.product.imagePath,
