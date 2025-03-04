@@ -29,7 +29,7 @@ async def handle_websocket_interaction(websocket: WebSocket):
     await websocket.accept()
     
     # Enviar saludo inicial
-    saludo = f"{random.choice(asistente.expresiones['saludos'])}\nSoy el vendedor de productos, ¿en qué le puedo ayudar?"
+    saludo = f"{random.choice(asistente.expresiones['saludos'])}\nSoy el Maestre de Biblioteca, ¿en qué le puedo ayudar?"
     await websocket.send_text(saludo)
 
     while True:
