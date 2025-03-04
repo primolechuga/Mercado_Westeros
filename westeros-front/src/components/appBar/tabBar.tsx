@@ -15,12 +15,16 @@ const roleBasedTabs: Record<string, TabItem[]> = {
     { label: 'Mercaderes', page: '/merchants' },
     { label: 'Productos', page: '/products' },
     { label: 'Añadir producto', page: '/addProduct' },
+    { label: 'Casa', page: '/house' },
+    // { label: 'Perfil', page: '/myProfile' },
   ],
   mercader: [
     { label: 'Subastas', page: '/' },
     {label: 'Subastas Creadas', page: '/myAuctions'},
     {label: 'Mis compras', page: '/myWonAuctions'},
     {label: 'Mis Pujas', page: '/myBids'},
+    { label: 'Productos', page: '/productList' },
+    // { label: 'Perfil', page: '/myProfile' },
   ],
 };
 

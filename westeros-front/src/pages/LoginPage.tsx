@@ -2,12 +2,8 @@
 import React from 'react';
 import { Login } from '../components/login';
 // import LogoAppBar from '../components/logoAppBar'; // Importar el componente LogoAppBar
-const LoginPage: React.FC = () => {
+export const LoginPage: React.FC = () => {
   return(
     <Login/>
 )};
-
-export default LoginPage;
-
-
 

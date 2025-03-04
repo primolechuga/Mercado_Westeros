@@ -46,5 +46,4 @@ export const HousePage: React.FC = () => {
   );
 };
 
-export default HousePage;
 

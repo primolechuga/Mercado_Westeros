@@ -23,7 +23,7 @@ export const transformAuction = (auction: AuctionFromBackend): AuctionItemType =
   };
 };
 
-const HomePage: React.FC = () => {
+export const HomePage: React.FC = () => {
   const [auctionsPrice, setAuctionsPrice] = useState<AuctionItemType[]>([]);
   const [auctionsDefault, setAuctionsDefault] = useState<AuctionItemType[]>([]);
   const [auctionsDate, setAuctionsDate] = useState<AuctionItemType[]>([]);
@@ -70,5 +70,3 @@ export const AuctionSection: React.FC<AuctionSectionProps> = ({ title, items }) 
     <HorizontalScroll items={items} aria-label={title} />
   </Container>
 );
-
-export default HomePage;

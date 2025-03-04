@@ -17,7 +17,7 @@ interface DataProps {
   stock: number;
 }
 
-const ProductTablePage: React.FC = () => {
+export const ProductListPage: React.FC = () => {
   const { user } = useAuth();
   const [productData, setProductData] = useState<DataProps[]>([]);
   useEffect(() => {
@@ -45,5 +45,3 @@ const ProductTablePage: React.FC = () => {
       <ProductTable data={productData} columns={productColumns} />
     </div>
 )};
-
-export default ProductTablePage;

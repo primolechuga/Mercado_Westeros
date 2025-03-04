@@ -21,7 +21,7 @@ const merchantsColumns = [
   { id: 'actions', label: 'Acciones' },
 ];
 
-const MerchantsPage: React.FC = () => {
+export const MerchantsPage: React.FC = () => {
   const { houseId } = useParams();
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +92,4 @@ const MerchantsPage: React.FC = () => {
     </div>
   );
 };
-
-export default MerchantsPage;
 

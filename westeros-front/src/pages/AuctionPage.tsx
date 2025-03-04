@@ -32,7 +32,7 @@ interface AuctionFromBackend {
   };
 }
 
-const AuctionPage: React.FC = () => {
+export const AuctionPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [auction, setAuction] = useState<AuctionFromBackend | null>(null);
   const [auctionsPrice, setAuctionsPrice] = useState<AuctionItemType[]>([]);
@@ -114,4 +114,3 @@ const AuctionPage: React.FC = () => {
   );
 };
 
-export default AuctionPage;

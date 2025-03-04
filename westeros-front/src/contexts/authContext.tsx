@@ -8,6 +8,7 @@ interface User {
   id: string;
   role: string;
   houseId: number;
+  balance: number;
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   login: (userData: AuthFormData) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  balance: number;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -91,7 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, role, login, logout, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, role, login, logout, loading, balance: user?.balance || 0 }}>
       {children}
     </AuthContext.Provider>
   );

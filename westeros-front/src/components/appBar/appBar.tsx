@@ -79,6 +79,10 @@ export default function PrimarySearchAppBar() {
     logout();
   };
 
+  const handleProfile = () => {
+    navigate('/myProfile');
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -92,7 +96,7 @@ export default function PrimarySearchAppBar() {
     >
       {isAuthenticated ? (
         <>
-          <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+          <MenuItem onClick={() =>{ handleProfile(); handleMenuClose()}}>Perfil</MenuItem>
           <MenuItem onClick={() => { handleLogout(); handleMenuClose(); }}>Cerrar Sesión</MenuItem>
         </>
       ) : (
