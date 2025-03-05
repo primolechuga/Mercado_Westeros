@@ -4,7 +4,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GavelIcon from '@mui/icons-material/Gavel';
 import EventIcon from '@mui/icons-material/Event';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-
+import { Link } from "react-router-dom";
 export interface AuctionItemType {
   id: string;
   image: string;
@@ -83,6 +83,7 @@ export const AuctionItem: React.FC<AuctionItemProps> = ({ item }) => {
   };
 
   return (
+    <Link to={`/auctionPage/${item.id}`} style={{ textDecoration: "none" }}>
     <Card sx={{ display: "flex", flexDirection: isSmallScreen ? "column" : "row", marginBottom: 2, boxShadow: 3 }}>
       <CardMedia
         component="img"
@@ -96,6 +97,7 @@ export const AuctionItem: React.FC<AuctionItemProps> = ({ item }) => {
         {renderAuctionInfo()}
       </CardContent>
     </Card>
+    </Link>
   );
 };
 

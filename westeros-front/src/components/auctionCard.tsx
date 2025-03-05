@@ -69,7 +69,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     try {
       setIsLoading(true);
       await onBid(bidAmount);
-      alert("Puja realizada con éxito");
+      // alert("Puja realizada con éxito");
       setBidValue("");
     } catch (error: any) {
       alert(error.message || "Error al realizar la puja");
