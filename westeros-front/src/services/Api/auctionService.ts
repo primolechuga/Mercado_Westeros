@@ -44,3 +44,13 @@ export const getAuction = async (auctionId : number) => {
     throw error;
   }
 };
+
+export const searchAuctions = async (query : string) => {
+  try {
+    const response = await api.get('auction/search', { params: { query } });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching auctions', error);
+    throw error;
+  }
+};

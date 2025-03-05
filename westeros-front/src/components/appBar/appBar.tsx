@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Logo from '../../assets/mwlogo.png';
@@ -54,16 +54,31 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, logout } = useAuth();
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  // Actualizamos searchText si la query en la URL cambia
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get('query') || '';
+    setSearchText(query);
+  }, [location.search]);
+
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Navega a la página de búsqueda con el nuevo parámetro query
+    navigate(`/search?query=${encodeURIComponent(searchText)}`);
   };
 
   const handleMenuClose = () => {
@@ -96,7 +111,7 @@ export default function PrimarySearchAppBar() {
     >
       {isAuthenticated ? (
         <>
-          <MenuItem onClick={() =>{ handleProfile(); handleMenuClose()}}>Perfil</MenuItem>
+          <MenuItem onClick={() => { handleProfile(); handleMenuClose(); }}>Perfil</MenuItem>
           <MenuItem onClick={() => { handleLogout(); handleMenuClose(); }}>Cerrar Sesión</MenuItem>
         </>
       ) : (
@@ -116,15 +131,20 @@ export default function PrimarySearchAppBar() {
             sx={{ height: 50, width: 'auto', cursor: 'pointer', marginRight: 2 }}
             onClick={() => navigate('/')}
           />
-          <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-            
-          </Typography>
+          <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}></Typography>
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
             <Search sx={{ width: { xs: '100%' }, maxWidth: 600 }}>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
-              <StyledInputBase placeholder="Buscar subastas..." inputProps={{ 'aria-label': 'search' }} />
+              <form onSubmit={handleSearchSubmit}>
+                <StyledInputBase
+                  placeholder="Buscar subastas..."
+                  inputProps={{ 'aria-label': 'search' }}
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+              </form>
             </Search>
           </Box>
           <Box sx={{ flexGrow: 1 }} />

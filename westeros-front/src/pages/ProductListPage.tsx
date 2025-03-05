@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ProductTable } from '../components/auctions/productsTable';
 import { useAuth } from '../contexts/authContext';
 import { getProductsByHouse } from '../services/Api/productService';
-
+import  FloatingChat  from '../components/floatchat';
 
 const productColumns = [
   { id: 'id', label: 'ID' },
@@ -43,5 +43,6 @@ export const ProductListPage: React.FC = () => {
     <div style={{ marginTop: '20px', padding: '20px' }}>
       <h1>Tabla de productos</h1>
       <ProductTable data={productData} columns={productColumns} />
+      <FloatingChat />
     </div>
 )};

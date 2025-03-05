@@ -14,3 +14,4 @@ export * from './HomePage';
 export * from './RegisterPage';
 export * from './ProfilePage';
 export * from './ProductTablePage';
+export * from './SearchAuctionsPage';

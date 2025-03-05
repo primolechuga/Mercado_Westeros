@@ -5,7 +5,7 @@ import { ProtectedRoute } from './components/auth/protectedRoute';
 
 import {WonAuctionsPage, MyBidsPage, ProductListPage , Unauthorized , AddProductPage,
   CreateAuctionPage, MyAuctionsPage, AuctionPage, HousePage, MerchantsPage, ProductTablePage ,
-  RegisterPage, LoginPage, HomePage, ProfilePage} from './pages';
+  RegisterPage, LoginPage, HomePage, ProfilePage, SearchAuctionsPage} from './pages';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -17,6 +17,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/auctionPage/:id" element={<AuctionPage />} />
       <Route path="/house" element={<HousePage />} />
+      <Route path="/search" element = {<SearchAuctionsPage/>} />
 
       
 
