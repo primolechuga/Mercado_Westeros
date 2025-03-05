@@ -49,7 +49,7 @@ export const AuctionItem: React.FC<AuctionItemProps> = ({ item }) => {
         <Stack direction={isSmallScreen ? "column" : "row"} spacing={1} alignItems="center" marginTop={2}>
           <Chip
             icon={<GavelIcon />}
-            label={`Última puja: $${item.lastBid.toFixed(2)}`}
+            label={`Última puja: $${item.lastBid}`}
             color="primary"
             variant="outlined"
           />
@@ -72,7 +72,7 @@ export const AuctionItem: React.FC<AuctionItemProps> = ({ item }) => {
           />
           <Chip
             icon={<AttachMoneyIcon />}
-            label={`Precio pagado: $${item.lastBid.toFixed(2)}`}
+            label={`Precio pagado: $${item.lastBid}`}
             color="secondary"
             variant="outlined"
           />

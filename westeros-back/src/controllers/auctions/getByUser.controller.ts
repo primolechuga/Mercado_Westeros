@@ -17,6 +17,7 @@ export const getByUser = async (req: Request, res: Response, _next: NextFunction
       basePrice: true,
       endDate: true,
       probability: true,
+      price: true,
       isActive: true,
       winnerId: true,
       product: {

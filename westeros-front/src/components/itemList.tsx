@@ -5,7 +5,7 @@ import { AuctionItemType, AuctionItem } from "./item";
 // Definimos la interfaz de los datos que vienen del backend
 interface AuctionFromBackend {
   id: number;
-  basePrice: number;
+  price: number;
   endDate: string;
   probability: number;
   isActive: boolean;
@@ -33,19 +33,14 @@ export const AuctionList: React.FC<AuctionListProps> = ({ items, showInactiveFil
 
   // Transformamos los datos del backend al formato que espera AuctionItem
   const displayItems: AuctionItemType[] = items.map(auction => {
-    console.log(auction.endDate);
     let endDateObj = new Date(auction.endDate);
-    // endDateObj = new Date(endDateObj.getUTCFullYear(), endDateObj.getUTCMonth(), endDateObj.getUTCDate(), endDateObj.getUTCHours(), endDateObj.getUTCMinutes(), endDateObj.getUTCSeconds());
-    console.log(endDateObj);
     const timeLeftAuction = Math.floor((endDateObj.getTime() - Date.now()) / 1000);
-    console.log(timeLeftAuction);
-    console.log(Date.now());
     return {
       id: auction.id.toString(),
       image: auction.product.imagePath,
       title: auction.product.name,
       description: auction.product.description,
-      lastBid: auction.basePrice, // Utilizamos basePrice como última puja
+      lastBid: auction.price, 
       endDate: endDateObj,
       timeLeftAuction: timeLeftAuction > 0 ? timeLeftAuction : 0,
       status: auction.isActive ? "active" : "finished"
