@@ -25,6 +25,8 @@ Para ejecutar el proyecto, asegúrese de tener instalados los siguientes requisi
 - [Docker](https://www.docker.com/) y [Docker Compose](https://docs.docker.com/compose/)
 - Node.js (en caso de ejecución fuera de contenedores)
 
+Nota : Verificar que el hora y la fecha de tu computadora este en (UTC -05:00) Bogotá, Lima, Quito, Rio Branco, de lo contrario podria general errores al intentar ejecutar el proyecto 
+
 ## Instalación y Ejecución
 
 1. **Clonar el repositorio:**
