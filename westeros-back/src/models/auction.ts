@@ -205,7 +205,7 @@ export const closeAuction = async (auctionId: number) => {
   }
 
   //calculamos la ganacia o perdida de la casa
-  const profit = initialPrice - finalPrice;
+  const profit = parseFloat((initialPrice - finalPrice).toFixed(2));
   await Promise.all([
     // Actualizamos el balance de la casa que compra
     prisma.house.update({

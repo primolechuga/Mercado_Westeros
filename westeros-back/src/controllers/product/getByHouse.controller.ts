@@ -18,6 +18,9 @@ export const getByHouse = async (req: Request, res: Response, _next: NextFunctio
           name: true,
         }
       }
+    },
+    orderBy: {
+      id: 'asc'
     }
   });
 

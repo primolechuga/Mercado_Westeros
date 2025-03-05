@@ -54,3 +54,13 @@ export const searchAuctions = async (query : string) => {
     throw error;
   }
 };
+
+export const getMyWonAuctions = async (userId : string) => {
+  try {
+    const response = await api.get(`auction/wons/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching auctions', error);
+    throw error;
+  }
+};
