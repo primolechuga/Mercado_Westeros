@@ -94,5 +94,5 @@ model BidHistory {
   date      DateTime
   isWinner  Boolean
   Auction   Auction  @relation(fields: [auctionId], references: [id])
-  User      User     @relation(fields: [userId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete:Cascade) 
 }

@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
       <Typography variant="body2" color="textSecondary">
         © {new Date().getFullYear()} Mercado de Westeros. Todos los derechos reservados.
       </Typography>
-      <Link href="/privacy-policy" color="inherit" sx={{ mt: 1, display: "block" }}>
+      <Link href="https://github.com/primolechuga/Mercado_Westeros" color="inherit" sx={{ mt: 1, display: "block" }}>
         Política de privacidad
       </Link>
     </Box>

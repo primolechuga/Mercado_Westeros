@@ -63,21 +63,21 @@ services:
     depends_on:
       - app
 
-  # chat-bot:
-  #   container_name: chatBot
-  #   restart: unless-stopped
-  #   build: 
-  #     context: ./chat-bot
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - ./chat-bot:/usr/src/app:cached
-  #   networks:
-  #     - app-network
-  #   command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  #   depends_on:
-  #     - postgres
+  chat-bot:
+    container_name: chatBot
+    restart: unless-stopped
+    build: 
+      context: ./chat-bot
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chat-bot:/usr/src/app:cached
+    networks:
+      - app-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - postgres
 
 volumes:
   postgres-data:
