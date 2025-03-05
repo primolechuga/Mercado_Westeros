@@ -2,7 +2,8 @@ import { hashPassword } from '../utils/hashPassword';
 import { prisma } from '../libs/prisma';
 import { houses } from './houses';
 import { products } from './products';
-import { createAuction } from '../models/auction';
+// import { createAuction } from '../models/auction';
+import { getProduct } from '../models/product';
 
 async function main() {
   // Crear casas
@@ -121,7 +122,7 @@ async function main() {
     const mercader = mercaderes[i % mercaderes.length];
     const basePrice = Math.floor(Math.random() * 1000) + 1;
     const endDate = new Date();
-    endDate.setFullYear(2025, 6, 1); 
+    endDate.setFullYear(2025, 3, 10); 
     const quantity = Math.floor(Math.random() * 10) + 1;
     const productId = i + 1;
     const houseId = mercader.houseId;
@@ -135,19 +136,51 @@ async function main() {
       productId
     });
 
-    await createAuction( houseId, productId, basePrice, endDate, quantity, mercader.id);
-  }
-
-
-
+    const product = await getProduct(houseId, productId);
+    const productStore = await prisma.productStore.findFirst({
+      where: {
+        houseId,
+        productId
+      }
+    });
+    if (!product || !productStore) {
+      throw new Error('Product not found');
+    }
+    if (product.stock - quantity < 0) {
+      throw new Error('Product out of stock');
+    }
+    await prisma.auction.create({
+      data: {
+        basePrice,
+        endDate : new Date(endDate),
+        productId,
+        houseId,
+        quantity,
+        price: basePrice,
+        initialPrice: productStore.price,
+        isActive: true,
+        increment: 0.1,
+        probability: 0.9,
+        ownerId: mercader.id,
+        winnerId: undefined // No hay ganador al inicio
+      }
+    }
+    );
     
-
-
-
-
-
+    await prisma.productStore.update({
+      where: {
+        houseId_productId: {
+          houseId: houseId,
+          productId: productId
+        }
+      },
+      data: {
+        stock: { decrement: quantity }
+      }
+    });
+    
+  };
 }
-
 
 main()
   .catch((e) => {
